@@ -78,6 +78,46 @@ export const PALETTES = {
       '--sidebar': '#282F23', '--s-text': '#F5F6F4', '--s-dim': '#93A088',
       '--btn-shadow': '0 2px 8px rgba(105,137,77,.32)'
     }
+  },
+  creamHoney: {
+    name: 'Cream & Honey',
+    vars: {
+      '--parchment': '#F8F3E7', '--cream': '#FFFDF8', '--linen': '#F0E8D2',
+      '--terra': '#C99A3E', '--terra-dk': '#9C7526', '--terra-lt': '#E8CE94',
+      '--espresso': '#2E2717', '--walnut': '#6E5A34', '--ink': '#2E2717', '--muted': '#A0906D',
+      '--sidebar': '#2E2717', '--s-text': '#F5EFDD', '--s-dim': '#8A7A54',
+      '--btn-shadow': '0 2px 8px rgba(201,154,62,.32)'
+    }
+  },
+  creamSage: {
+    name: 'Cream & Sage',
+    vars: {
+      '--parchment': '#F6F4EA', '--cream': '#FEFDF9', '--linen': '#E9E8D9',
+      '--terra': '#7C9468', '--terra-dk': '#57703F', '--terra-lt': '#BFD1AC',
+      '--espresso': '#232819', '--walnut': '#4F5B3C', '--ink': '#232819', '--muted': '#8F9A7C',
+      '--sidebar': '#232819', '--s-text': '#F1F3E9', '--s-dim': '#77835F',
+      '--btn-shadow': '0 2px 8px rgba(124,148,104,.32)'
+    }
+  },
+  creamSky: {
+    name: 'Cream & Sky',
+    vars: {
+      '--parchment': '#F5F4EC', '--cream': '#FDFDF9', '--linen': '#E6E7DD',
+      '--terra': '#6E88A8', '--terra-dk': '#485F7D', '--terra-lt': '#AEC0D6',
+      '--espresso': '#1E2530', '--walnut': '#3E4E63', '--ink': '#1E2530', '--muted': '#8391A0',
+      '--sidebar': '#1E2530', '--s-text': '#EFF1F5', '--s-dim': '#6C7A8A',
+      '--btn-shadow': '0 2px 8px rgba(110,136,168,.32)'
+    }
+  },
+  creamBerry: {
+    name: 'Cream & Berry',
+    vars: {
+      '--parchment': '#F7F2ED', '--cream': '#FFFCF9', '--linen': '#EEE3DB',
+      '--terra': '#A8455C', '--terra-dk': '#7C2C40', '--terra-lt': '#DBA5AF',
+      '--espresso': '#2C1A1E', '--walnut': '#6B3A44', '--ink': '#2C1A1E', '--muted': '#A17F85',
+      '--sidebar': '#2C1A1E', '--s-text': '#F6ECEE', '--s-dim': '#8A6067',
+      '--btn-shadow': '0 2px 8px rgba(168,69,92,.32)'
+    }
   }
 };
 
