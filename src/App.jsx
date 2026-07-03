@@ -32,7 +32,7 @@ function AppShell() {
 
   return (
     <>
-      <TopBar onAdd={openAdd} onSettings={() => setSettingsOpen(true)} minimal={isDetailView} />
+      {!isDetailView && <TopBar onAdd={openAdd} onSettings={() => setSettingsOpen(true)} />}
       <div className="layout">
         <Sidebar onNewCollection={() => setColModal({ open: true, editId: null })} />
         <Routes>

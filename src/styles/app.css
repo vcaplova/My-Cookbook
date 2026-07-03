@@ -47,6 +47,12 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
   width: 36px; height: 36px; background: var(--terra);
   border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
+.brand-icon-sm {
+  width: 30px; height: 30px; background: var(--terra);
+  border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  cursor: pointer; transition: transform .15s, background .15s;
+}
+.brand-icon-sm:hover { background: var(--terra-dk); transform: scale(1.06); }
 .brand-name { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--espresso); line-height: 1.15; }
 .brand-name small { display: block; font-family: var(--sans); font-size: 9px; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
 .topbar-mid { flex: 1; padding: 0 24px; display: flex; align-items: center; }
@@ -374,7 +380,7 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 
 /* ── DETAIL PANEL ─────────────────────────────────────── */
 .detail-panel {
-  position: fixed; top: var(--th); left: 0; right: 0; bottom: 0; z-index: 105; display: none;
+  position: fixed; inset: 0; z-index: 105; display: none;
   align-items: stretch; pointer-events: none;
 }
 .detail-panel.open { display: flex; pointer-events: all; }
