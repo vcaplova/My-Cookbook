@@ -1,25 +1,23 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useLibrary } from '../../context/LibraryContext';
-import { importRecipeFromUrl, importRecipeFromImages } from '../../lib/ai';
-import { storage } from '../../lib/storage';
-import { XIcon, LinkIcon, ImageIcon, DownloadIcon } from '../Icons';
+import { XIcon } from '../Icons';
 
-export default function ImportModal({ open, onClose, onDraft }) {
-  const { toast } = useLibrary();
-  const [tab, setTab] = useState('url');
-  const [url, setUrl] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [images, setImages] = useState([]); // { name, dataUrl, mediaType, base64 }
-  const fileRef = useRef(null);
+const ClipboardIcon = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+  </svg>
+);
 
-  if (!open) return null;
-
-  const reset = () => { setUrl(''); setImages([]); setLoading(false); setTab('url'); };
-  const close = () => { reset(); onClose(); };
-
-  const emptyDraft = { title: '', cookTime: '', servings: 4, img: '', ingredients: [''], steps: [''], tags: [], collections: [], notes: '' };
-
-  const toDraft = (parsed) => ({
+function parseSkillOutput(raw) {
+  let text = raw.trim();
+  if (text.indexOf('```') >= 0) {
+    const s = text.indexOf('{');
+    const e = text.lastIndexOf('}');
+    if (s >= 0 && e > s) text = text.slice(s, e + 1);
+  }
+  const parsed = JSON.parse(text);
+  return {
     title: parsed.title || '',
     cookTime: parsed.cookTime || '',
     servings: parseInt(parsed.servings) || 4,
@@ -29,127 +27,58 @@ export default function ImportModal({ open, onClose, onDraft }) {
     tags: Array.isArray(parsed.tags) ? parsed.tags : [],
     collections: [],
     notes: '',
-  });
-
-  const doUrlImport = async () => {
-    const u = url.trim();
-    if (!u) return;
-    setLoading(true);
-    try {
-      const parsed = await importRecipeFromUrl(storage.getApiKey(), u);
-      const draft = toDraft(parsed);
-      reset(); onClose(); onDraft(draft, null);
-    } catch (err) {
-      setLoading(false);
-      toast(err.message || 'Import failed. Please try again.');
-    }
   };
+}
 
-  const doImageImport = async () => {
-    if (!images.length) return;
-    setLoading(true);
+export default function ImportModal({ open, onClose, onDraft }) {
+  const [text, setText] = useState('');
+  const [error, setError] = useState('');
+
+  if (!open) return null;
+
+  const reset = () => { setText(''); setError(''); };
+  const close = () => { reset(); onClose(); };
+
+  const emptyDraft = { title: '', cookTime: '', servings: 4, img: '', ingredients: [''], steps: [''], tags: [], collections: [], notes: '' };
+
+  const doParse = () => {
+    if (!text.trim()) return;
     try {
-      const parsed = await importRecipeFromImages(storage.getApiKey(), images);
-      const draft = toDraft(parsed);
-      if (!draft.img && images[0]) draft.img = images[0].dataUrl;
+      const draft = parseSkillOutput(text);
+      if (!draft.title) throw new Error('No title found');
       reset(); onClose(); onDraft(draft, null);
-    } catch (err) {
-      setLoading(false);
-      toast(err.message || 'Import failed. Please try again.');
+    } catch {
+      setError("Couldn't read that — make sure you pasted the whole JSON block the skill gave you.");
     }
-  };
-
-  const addFiles = (files) => {
-    Array.from(files).forEach((file) => {
-      if (!file.type.startsWith('image/')) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const dataUrl = e.target.result;
-        const base64 = dataUrl.split(',')[1];
-        setImages((imgs) => [...imgs, { name: file.name, dataUrl, mediaType: file.type, base64 }]);
-      };
-      reader.readAsDataURL(file);
-    });
   };
 
   return (
-    <div className="modal-back open" onClick={(e) => { if (e.target === e.currentTarget && !loading) close(); }}>
+    <div className="modal-back open" onClick={(e) => { if (e.target === e.currentTarget) close(); }}>
       <div className="modal">
-        {!loading ? (
-          <div>
-            <div className="modal-head">
-              <h2 className="modal-title">Add a recipe</h2>
-              <button className="btn-x" onClick={close}><XIcon /></button>
-            </div>
-            <p className="modal-sub">Paste a URL, upload a photo, or write from scratch.</p>
+        <div className="modal-head">
+          <h2 className="modal-title">Add a recipe</h2>
+          <button className="btn-x" onClick={close}><XIcon /></button>
+        </div>
+        <p className="modal-sub">Paste what the Cookbook Import skill gave you, or write it from scratch.</p>
 
-            <div className="import-tabs">
-              <button className={tab === 'url' ? 'import-tab active' : 'import-tab'} onClick={() => setTab('url')}>
-                <LinkIcon /> From URL
-              </button>
-              <button className={tab === 'image' ? 'import-tab active' : 'import-tab'} onClick={() => setTab('image')}>
-                <ImageIcon /> From Image
-              </button>
-            </div>
+        <div style={{ marginTop: 16 }}>
+          <textarea
+            rows={8}
+            placeholder={'Ask Claude to use the "Cookbook Import" skill with a recipe link or photo, then paste its reply here…'}
+            value={text}
+            onChange={(e) => { setText(e.target.value); setError(''); }}
+            style={{ width: '100%', background: 'var(--parchment)', border: '1.5px solid var(--linen)', borderRadius: 'var(--r-sm)', padding: '10px 12px', fontFamily: 'monospace', fontSize: 12.5, color: 'var(--ink)', outline: 'none', resize: 'vertical', lineHeight: 1.6 }}
+          />
+          {error && <p style={{ color: '#c0392b', fontSize: 12.5, marginTop: 8 }}>{error}</p>}
+          <button className="btn-primary" style={{ marginTop: 12 }} onClick={doParse}>
+            <ClipboardIcon /> <span>Add This Recipe</span>
+          </button>
+        </div>
 
-            {tab === 'url' ? (
-              <div>
-                <div className="field-wrap" style={{ marginTop: 16 }}>
-                  <LinkIcon size={16} />
-                  <input className="field-input" type="url" placeholder="https://www.seriouseats.com/…"
-                    value={url} onChange={(e) => setUrl(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter') doUrlImport(); }} autoFocus />
-                </div>
-                <button className="btn-primary" onClick={doUrlImport}>Import Recipe</button>
-              </div>
-            ) : (
-              <div>
-                <div className="img-upload-area"
-                  onClick={() => fileRef.current?.click()}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={(e) => { e.preventDefault(); addFiles(e.dataTransfer.files); }}>
-                  <input type="file" ref={fileRef} accept="image/*" multiple style={{ display: 'none' }}
-                    onChange={(e) => addFiles(e.target.files)} />
-                  <div className="img-upload-content">
-                    <ImageIcon size={32} strokeWidth={1.5} />
-                    <p className="img-upload-label">Drop photos here or <span className="img-upload-link">browse</span></p>
-                    <p className="img-upload-hint">Upload one or more images — Claude will read them all together</p>
-                  </div>
-                </div>
-                {images.length > 0 && (
-                  <div className="img-thumbs">
-                    {images.map((img, i) => (
-                      <div key={i} className="img-thumb">
-                        <img src={img.dataUrl} alt="" />
-                        <button className="img-thumb-rm" onClick={() => setImages((imgs) => imgs.filter((_, j) => j !== i))}><XIcon size={9} /></button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                <button className="btn-primary" disabled={!images.length} onClick={doImageImport}>
-                  <DownloadIcon size={15} /> <span>Extract Recipe from {images.length > 1 ? images.length + ' Images' : 'Image'}</span>
-                </button>
-              </div>
-            )}
-
-            <div className="modal-or">or</div>
-            <button className="btn-secondary" onClick={() => { reset(); onClose(); onDraft(emptyDraft, null, true); }}>
-              Write it from scratch
-            </button>
-          </div>
-        ) : (
-          <div>
-            <div className="modal-head"><h2 className="modal-title">Importing…</h2></div>
-            <p className="modal-sub">Claude is reading {tab === 'url' ? 'the URL' : 'your photos'} and building the recipe.</p>
-            <div className="load-wrap">
-              <div className="spinner"></div>
-              <div className="load-txt">
-                <strong>{tab === 'url' ? (url.length > 60 ? url.slice(0, 57) + '…' : url) : images.length + ' image' + (images.length > 1 ? 's' : '')}</strong>
-                Extracting ingredients, steps, and details…
-              </div>
-            </div>
-          </div>
-        )}
+        <div className="modal-or">or</div>
+        <button className="btn-secondary" onClick={() => { reset(); onClose(); onDraft(emptyDraft, null, true); }}>
+          Write it from scratch
+        </button>
       </div>
     </div>
   );

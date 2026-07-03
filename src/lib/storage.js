@@ -4,7 +4,6 @@
 
 const STORAGE_KEY = 'mise_en_place_v1';
 const PALETTE_KEY = 'mep-palette';
-const API_KEY_KEY = 'mep-anthropic-key';
 
 export class LocalStorageAdapter {
   async loadLibrary() {
@@ -37,14 +36,6 @@ export class LocalStorageAdapter {
   }
   setPalette(key) {
     localStorage.setItem(PALETTE_KEY, key);
-  }
-
-  getApiKey() {
-    return localStorage.getItem(API_KEY_KEY) || '';
-  }
-  setApiKey(key) {
-    if (key) localStorage.setItem(API_KEY_KEY, key);
-    else localStorage.removeItem(API_KEY_KEY);
   }
 }
 

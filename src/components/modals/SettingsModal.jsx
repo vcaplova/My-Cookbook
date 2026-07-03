@@ -1,23 +1,11 @@
-import { useEffect, useState } from 'react';
 import { useLibrary } from '../../context/LibraryContext';
 import { PALETTES } from '../../lib/palettes';
-import { storage } from '../../lib/storage';
 import { XIcon } from '../Icons';
 
 export default function SettingsModal({ open, onClose }) {
-  const { palette, setPalette, toast } = useLibrary();
-  const [apiKey, setApiKey] = useState('');
-
-  useEffect(() => {
-    if (open) setApiKey(storage.getApiKey());
-  }, [open]);
+  const { palette, setPalette } = useLibrary();
 
   if (!open) return null;
-
-  const saveKey = () => {
-    storage.setApiKey(apiKey.trim());
-    toast(apiKey.trim() ? 'API key saved on this device' : 'API key removed', true);
-  };
 
   return (
     <div className="modal-back open" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
@@ -46,16 +34,11 @@ export default function SettingsModal({ open, onClose }) {
         </div>
 
         <div className="settings-section">
-          <p className="settings-label">AI Recipe Import</p>
-          <p className="settings-hint" style={{ marginBottom: 8 }}>
-            Import from URLs and photos is powered by Claude and needs your own Anthropic API key.
-            The key is stored only in this browser — it never leaves your device except to call the Anthropic API directly.
+          <p className="settings-label">Adding Recipes</p>
+          <p className="settings-hint">
+            To add a recipe from a link or photo, ask Claude to use the "Cookbook Import" skill, then paste its
+            reply into Add Recipe. No account or API key needed — it runs on your own Claude usage.
           </p>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <input className="col-name-input" style={{ flex: 1 }} type="password" placeholder="sk-ant-…"
-              value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
-            <button className="btn-save" onClick={saveKey}>Save</button>
-          </div>
         </div>
       </div>
     </div>
