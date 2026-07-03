@@ -6,35 +6,13 @@ import {
 } from './Icons';
 import { useState } from 'react';
 import { useIsMobile } from '../lib/useIsMobile';
+import SearchModal from './modals/SearchModal';
 
 export function TopBar({ onAdd, onSettings }) {
   const { search, setSearch, view, setView, setFilter, setActiveTags } = useLibrary();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const [searchActive, setSearchActive] = useState(false);
-
-  const closeSearch = () => setSearchActive(false);
-  const cancelSearch = () => { setSearch(''); setSearchActive(false); };
-
-  if (isMobile && searchActive) {
-    return (
-      <header className="topbar topbar-search-active">
-        <div className="search-wrap search-wrap-expanded">
-          <SearchIcon className="search-icon" />
-          <input
-            type="text"
-            autoFocus
-            placeholder="Search recipes, tags…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter') closeSearch(); }}
-          />
-        </div>
-        <button type="button" className="search-cancel-btn" onClick={cancelSearch}>Cancel</button>
-      </header>
-    );
-  }
-
+  const [searchOpen, setSearchOpen] = useState(false);
   return (
     <header className="topbar">
       <div className="brand" style={{ cursor: 'pointer' }} onClick={() => { setFilter('all'); setActiveTags([]); navigate('/'); }}>
@@ -43,7 +21,7 @@ export function TopBar({ onAdd, onSettings }) {
       </div>
       <div className="topbar-mid">
         {isMobile ? (
-          <button type="button" className="search-wrap search-wrap-btn" onClick={() => setSearchActive(true)}>
+          <button type="button" className="search-wrap search-wrap-btn" onClick={() => setSearchOpen(true)}>
             <SearchIcon className="search-icon" />
             <span className={search ? 'search-fake-input has-value' : 'search-fake-input'}>
               {search || 'Search recipes, tags…'}
@@ -66,6 +44,7 @@ export function TopBar({ onAdd, onSettings }) {
           <PlusIcon stroke="#fff" /> <span className="btn-add-label">Add Recipe</span>
         </button>
       </div>
+      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 }
