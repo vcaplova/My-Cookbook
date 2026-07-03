@@ -241,11 +241,19 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 .field-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
 .field-input {
   width: 100%; height: 50px; background: var(--parchment); border: 1.5px solid var(--linen);
-  border-radius: var(--r-md); padding: 0 16px 0 46px; font-family: var(--sans); font-size: 14px;
+  border-radius: var(--r-md); padding: 0 40px 0 46px; font-family: var(--sans); font-size: 14px;
   color: var(--ink); outline: none; transition: border-color .18s;
 }
 .field-input::placeholder { color: var(--muted); }
 .field-input:focus { border-color: var(--terra); background: var(--cream); }
+.search-modal-clear {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  width: 26px; height: 26px; border-radius: 50%; border: none;
+  background: var(--linen); color: var(--muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, color .15s;
+}
+.search-modal-clear:hover { background: var(--terra); color: #fff; }
 .btn-primary {
   width: 100%; height: 48px; background: var(--terra); color: #fff; border: none;
   border-radius: var(--r-md); font-family: var(--sans); font-size: 15px; font-weight: 700;
@@ -480,7 +488,13 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
   .brand-name { display: none; }
   .topbar-mid { padding: 0 10px; }
   .search-wrap { max-width: none; }
-  .search-wrap input { font-size: 16px; }
+  .search-wrap-btn {
+    width: 100%; height: 38px; background: var(--linen); border: 1.5px solid transparent;
+    border-radius: 99px; padding: 0 16px 0 42px; font-family: var(--sans);
+    cursor: pointer; text-align: left; position: relative; display: flex; align-items: center;
+  }
+  .search-fake-input { font-size: 13.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .search-fake-input.has-value { color: var(--ink); font-weight: 600; }
 
   /* Prevent iOS Safari's auto-zoom-on-focus for every text field, not just
      search — any input under 16px triggers it. */

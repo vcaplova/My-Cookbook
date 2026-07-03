@@ -5,10 +5,14 @@ import {
   GridIcon, ListIcon, PlusIcon, BookIcon, ClockIcon, StarIcon, WarnIcon,
 } from './Icons';
 import { useState } from 'react';
+import { useIsMobile } from '../lib/useIsMobile';
+import SearchModal from './modals/SearchModal';
 
 export function TopBar({ onAdd, onSettings }) {
   const { search, setSearch, view, setView, setFilter, setActiveTags } = useLibrary();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
   return (
     <header className="topbar">
       <div className="brand" style={{ cursor: 'pointer' }} onClick={() => { setFilter('all'); setActiveTags([]); navigate('/'); }}>
@@ -16,10 +20,19 @@ export function TopBar({ onAdd, onSettings }) {
         <div className="brand-name">My Cookbook<small>Recipe Library</small></div>
       </div>
       <div className="topbar-mid">
-        <div className="search-wrap">
-          <SearchIcon className="search-icon" />
-          <input type="text" placeholder="Search recipes, tags…" value={search} onChange={(e) => setSearch(e.target.value)} />
-        </div>
+        {isMobile ? (
+          <button type="button" className="search-wrap search-wrap-btn" onClick={() => setSearchModalOpen(true)}>
+            <SearchIcon className="search-icon" />
+            <span className={search ? 'search-fake-input has-value' : 'search-fake-input'}>
+              {search || 'Search recipes, tags…'}
+            </span>
+          </button>
+        ) : (
+          <div className="search-wrap">
+            <SearchIcon className="search-icon" />
+            <input type="text" placeholder="Search recipes, tags…" value={search} onChange={(e) => setSearch(e.target.value)} />
+          </div>
+        )}
       </div>
       <div className="topbar-right">
         <button className="btn-icon" title="Settings" onClick={onSettings}><SettingsIcon /></button>
@@ -31,6 +44,7 @@ export function TopBar({ onAdd, onSettings }) {
           <PlusIcon stroke="#fff" /> <span className="btn-add-label">Add Recipe</span>
         </button>
       </div>
+      <SearchModal open={searchModalOpen} onClose={() => setSearchModalOpen(false)} />
     </header>
   );
 }
