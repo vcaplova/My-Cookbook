@@ -480,7 +480,14 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
   .brand-name { display: none; }
   .topbar-mid { padding: 0 10px; }
   .search-wrap { max-width: none; }
-  .search-wrap input { font-size: 13px; }
+  .search-wrap input { font-size: 16px; }
+
+  /* Prevent iOS Safari's auto-zoom-on-focus for every text field, not just
+     search — any input under 16px triggers it. */
+  input[type="text"], input[type="url"], input[type="number"], input[type="password"],
+  textarea, .col-name-input, .tag-add-inline-input, .tags-input-wrap input {
+    font-size: 16px !important;
+  }
   .topbar-right { padding-right: 10px; gap: 8px; }
   .btn-add-label { display: none; }
   .btn-add { width: 40px; height: 40px; padding: 0; justify-content: center; border-radius: 50%; }
