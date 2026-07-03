@@ -118,6 +118,7 @@ export default function CookPage({ onEdit }) {
 
   return (
     <div className="detail-panel open">
+      <div className="detail-back-drop" onClick={() => navigate('/')}></div>
       <div className="detail-sheet">
         <div className="detail-bar">
           <button className="btn-detail-back" onClick={() => navigate('/')}><ChevronLeft /> Library</button>
