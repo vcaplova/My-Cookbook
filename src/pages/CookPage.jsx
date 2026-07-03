@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import { scaleIng, getStepIngs, extractTimerFromStep, formatTimerTime } from '../lib/utils';
-import { ChevronLeft, ChevronRight, ListIcon, FlameIcon, BrandIcon } from '../components/Icons';
+import { ChevronLeft, ChevronRight, ListIcon, FlameIcon } from '../components/Icons';
 
 const CIRCUMFERENCE = 2 * Math.PI * 32;
 
@@ -112,7 +112,6 @@ export default function CookPage() {
     <div className="detail-panel open">
       <div className="detail-sheet">
         <div className="detail-bar">
-          <div className="brand-icon-sm" title="Back to My Cookbook" onClick={() => navigate('/')}><BrandIcon size={16} /></div>
           <button className="btn-detail-back" onClick={() => navigate(`/recipe/${recipe.id}`)}><ChevronLeft /> Recipe</button>
           <div className="detail-bar-title">{recipe.title}</div>
           <div className="mode-toggle">
