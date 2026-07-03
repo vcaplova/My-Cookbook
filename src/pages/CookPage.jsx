@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import { scaleIng, getStepIngs, extractTimerFromStep, formatTimerTime } from '../lib/utils';
-import { ChevronLeft, ChevronRight, ListIcon, FlameIcon } from '../components/Icons';
+import { ChevronLeft, ChevronRight, ListIcon, FlameIcon, EditIcon, TrashIcon, PinIcon, StarIcon } from '../components/Icons';
 
 const CIRCUMFERENCE = 2 * Math.PI * 32;
 
@@ -78,10 +78,10 @@ function CookTimer({ min, max }) {
   );
 }
 
-export default function CookPage() {
+export default function CookPage({ onEdit }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { recipes } = useLibrary();
+  const { recipes, toggleStar, togglePin, deleteRecipe, confirm, toast } = useLibrary();
   const recipe = recipes.find((r) => r.id === Number(id));
   const [step, setStep] = useState(0);
   const scaledServings = recipe?.servings || 4;
@@ -89,13 +89,13 @@ export default function CookPage() {
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'Escape') navigate(`/recipe/${id}`);
+      if (e.key === 'Escape') navigate('/');
       if (e.key === 'ArrowRight') setStep((s) => Math.min(s + 1, (recipe?.steps.length || 1) - 1));
       if (e.key === 'ArrowLeft') setStep((s) => Math.max(s - 1, 0));
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [navigate, id, recipe]);
+  }, [navigate, recipe]);
 
   if (!recipe) { navigate('/'); return null; }
 
@@ -108,16 +108,33 @@ export default function CookPage() {
   const isLast = step >= total - 1;
   const ratio = scaledServings / baseServings;
 
+  const doDelete = () => {
+    confirm(`Delete "${recipe.title}"? This cannot be undone.`, () => {
+      deleteRecipe(recipe.id);
+      toast(`"${recipe.title}" deleted`, true);
+      navigate('/');
+    });
+  };
+
   return (
     <div className="detail-panel open">
       <div className="detail-sheet">
         <div className="detail-bar">
-          <button className="btn-detail-back" onClick={() => navigate(`/recipe/${recipe.id}`)}><ChevronLeft /> Recipe</button>
+          <button className="btn-detail-back" onClick={() => navigate('/')}><ChevronLeft /> Library</button>
           <div className="detail-bar-title">{recipe.title}</div>
           <div className="mode-toggle">
             <button className="mbtn" onClick={() => navigate(`/recipe/${recipe.id}`)}><ListIcon size={13} /> Read</button>
             <button className="mbtn on"><FlameIcon /> Cook</button>
           </div>
+          <button className="btn-icon" title="Edit recipe" onClick={() => onEdit(recipe)}><EditIcon /></button>
+          <button className="btn-icon btn-icon-del" title="Delete recipe" onClick={doDelete}><TrashIcon size={14} /></button>
+          <button className={recipe.pinned ? 'detail-pin on' : 'detail-pin'} title={recipe.pinned ? 'Unpin recipe' : 'Pin recipe'}
+            onClick={() => { togglePin(recipe.id); toast(recipe.pinned ? `"${recipe.title}" unpinned` : `"${recipe.title}" pinned`); }}>
+            <PinIcon size={14} />
+          </button>
+          <button className={recipe.starred ? 'detail-fav on' : 'detail-fav'} onClick={() => toggleStar(recipe.id)}>
+            <StarIcon size={16} fill={recipe.starred ? '#D4A843' : 'none'} stroke={recipe.starred ? '#D4A843' : '#9C856A'} />
+          </button>
         </div>
         <div className="cook-mode">
           <div className="cook-prog"><div className="cook-prog-fill" style={{ width: ((step + 1) / total * 100) + '%' }}></div></div>

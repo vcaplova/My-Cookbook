@@ -38,7 +38,7 @@ function AppShell() {
           <Routes>
             <Route path="/" element={<><TopBar onAdd={openAdd} onSettings={() => setSettingsOpen(true)} /><LibraryPage onAdd={openAdd} /></>} />
             <Route path="/recipe/:id" element={<RecipePage onEdit={editRecipe} />} />
-            <Route path="/recipe/:id/cook" element={<CookPage />} />
+            <Route path="/recipe/:id/cook" element={<CookPage onEdit={editRecipe} />} />
           </Routes>
         </div>
       </div>
