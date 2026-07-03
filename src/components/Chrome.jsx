@@ -1,18 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import {
-  BrandIcon, SearchIcon, DownloadIcon, TrashIcon, SettingsIcon,
+  BrandIcon, SearchIcon, DownloadIcon, SettingsIcon,
   GridIcon, ListIcon, PlusIcon, BookIcon, ClockIcon, StarIcon, WarnIcon,
 } from './Icons';
 import { useState } from 'react';
 
 export function TopBar({ onAdd, onSettings }) {
-  const { search, setSearch, view, setView, exportJSON, clearLibrary, confirm, toast, setFilter, setActiveTags } = useLibrary();
+  const { search, setSearch, view, setView, exportJSON, setFilter, setActiveTags } = useLibrary();
   const navigate = useNavigate();
   return (
-    <header className="page-topbar">
-      <div className="mobile-brand" onClick={() => { setFilter('all'); setActiveTags([]); navigate('/'); }}>
+    <header className="topbar">
+      <div className="brand" style={{ cursor: 'pointer' }} onClick={() => { setFilter('all'); setActiveTags([]); navigate('/'); }}>
         <div className="brand-icon"><BrandIcon /></div>
+        <div className="brand-name">My Cookbook<small>Recipe Library</small></div>
       </div>
       <div className="topbar-mid">
         <div className="search-wrap">
@@ -22,7 +23,6 @@ export function TopBar({ onAdd, onSettings }) {
       </div>
       <div className="topbar-right">
         <button className="btn-icon" title="Export library as JSON" onClick={exportJSON}><DownloadIcon /></button>
-        <button className="btn-icon" title="Clear library" onClick={() => confirm('Clear your entire library? This cannot be undone.', () => { clearLibrary(); toast('Library cleared', true); }, 'Clear')}><TrashIcon /></button>
         <button className="btn-icon" title="Settings" onClick={onSettings}><SettingsIcon /></button>
         <div className="view-toggle">
           <button className={view === 'grid' ? 'vbtn on' : 'vbtn'} title="Grid" onClick={() => setView('grid')}><GridIcon /></button>
@@ -48,11 +48,6 @@ export function Sidebar({ onNewCollection }) {
   const go = (f) => { setFilter(f); navigate('/'); };
   return (
     <nav className="sidebar">
-      <div className="sidebar-brand" onClick={() => go('all')}>
-        <div className="brand-icon"><BrandIcon /></div>
-        <div className="brand-name">My Cookbook<small>Recipe Library</small></div>
-      </div>
-      <div className="sidebar-scroll">
       <div>
         <p className="sb-label">Library</p>
         <div className={filter === 'all' ? 'nav-item active' : 'nav-item'} onClick={() => go('all')}>
@@ -90,7 +85,6 @@ export function Sidebar({ onNewCollection }) {
         <button className="btn-new-col" onClick={onNewCollection}>
           <PlusIcon size={13} strokeWidth={2.5} /> New collection
         </button>
-      </div>
       </div>
     </nav>
   );
