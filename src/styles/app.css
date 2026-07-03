@@ -771,6 +771,8 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
   border-radius: var(--r-lg); padding: 14px 20px;
   flex-shrink: 0; max-width: 420px; width: auto;
 }
+.cook-timer.done { border-color: rgba(100,200,100,.4); }
+.timer-dial-fill.done { stroke: #7ada7a; }
 .timer-dial {
   position: relative; width: 72px; height: 72px; flex-shrink: 0;
 }

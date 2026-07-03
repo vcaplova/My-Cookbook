@@ -44,19 +44,23 @@ function CookTimer({ min, max }) {
   }, [running]);
 
   const progress = target > 0 ? remaining / target : 0;
-  const dashOffset = CIRCUMFERENCE * (1 - progress);
+  const dashOffset = done ? 0 : CIRCUMFERENCE * (1 - progress);
 
-  const reset = () => { setRunning(false); setDone(false); setRemaining(target); };
+  const cancel = () => { setRunning(false); setDone(false); setRemaining(target); };
   const changeTarget = (v) => { setTarget(v); if (!running) { setRemaining(v); setDone(false); } };
+  const primaryClick = () => {
+    if (done) { setDone(false); setRemaining(target); return; }
+    setRunning((r) => !r);
+  };
 
   return (
-    <div className={hasRange ? 'cook-timer has-range' : 'cook-timer'}>
+    <div className={hasRange ? (done ? 'cook-timer has-range done' : 'cook-timer has-range') : (done ? 'cook-timer done' : 'cook-timer')}>
       <div className="timer-dial">
         <svg width="72" height="72" viewBox="0 0 72 72">
           <circle className="timer-dial-track" cx="36" cy="36" r="32" />
-          <circle className="timer-dial-fill" cx="36" cy="36" r="32" strokeDasharray={CIRCUMFERENCE} strokeDashoffset={dashOffset} />
+          <circle className={done ? 'timer-dial-fill done' : 'timer-dial-fill'} cx="36" cy="36" r="32" strokeDasharray={CIRCUMFERENCE} strokeDashoffset={dashOffset} />
         </svg>
-        <div className={done ? 'timer-dial-text timer-done' : 'timer-dial-text'}>{done ? 'Done!' : formatTimerTime(remaining)}</div>
+        <div className="timer-dial-text">{done ? '✓' : formatTimerTime(remaining)}</div>
       </div>
       {hasRange && (
         <div className="timer-range">
@@ -67,12 +71,10 @@ function CookTimer({ min, max }) {
         </div>
       )}
       <div className="timer-controls">
-        {!done && (
-          <button className={running ? 'timer-btn running' : 'timer-btn primary'} onClick={() => setRunning((r) => !r)}>
-            {running ? 'Pause' : remaining < target ? 'Resume' : 'Start'}
-          </button>
-        )}
-        <button className="timer-btn danger" onClick={reset}>Reset</button>
+        <button className={done ? 'timer-btn timer-done' : running ? 'timer-btn running' : 'timer-btn primary'} onClick={primaryClick}>
+          {done ? 'Done!' : running ? 'Pause' : remaining < target ? 'Resume' : 'Start'}
+        </button>
+        <button className="timer-btn danger" onClick={cancel}>Cancel</button>
       </div>
     </div>
   );
