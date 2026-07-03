@@ -43,10 +43,10 @@ export const PALETTES = {
     name: 'Cream & Honey',
     vars: {
       '--parchment': '#F8F3E7', '--cream': '#FFFDF8', '--linen': '#F0E8D2',
-      '--terra': '#C99A3E', '--terra-dk': '#9C7526', '--terra-lt': '#E8CE94',
+      '--terra': '#D6872D', '--terra-dk': '#A3651A', '--terra-lt': '#EFC48A',
       '--espresso': '#2E2717', '--walnut': '#6E5A34', '--ink': '#2E2717', '--muted': '#A0906D',
       '--sidebar': '#2E2717', '--s-text': '#F5EFDD', '--s-dim': '#8A7A54',
-      '--btn-shadow': '0 2px 8px rgba(201,154,62,.32)'
+      '--btn-shadow': '0 2px 8px rgba(214,135,45,.32)'
     }
   },
   creamPlum: {
