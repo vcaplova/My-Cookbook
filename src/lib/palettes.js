@@ -39,46 +39,6 @@ export const PALETTES = {
       '--btn-shadow': '0 2px 8px rgba(178,110,77,.32)'
     }
   },
-  orchidMauve: {
-    name: 'Orchid Mauve',
-    vars: {
-      '--parchment': '#EEEAF0', '--cream': '#F8F6F9', '--linen': '#E2DCE5',
-      '--terra': '#844EA2', '--terra-dk': '#5B3371', '--terra-lt': '#D0BEDA',
-      '--espresso': '#281F2E', '--walnut': '#5B4766', '--ink': '#281F2E', '--muted': '#8F799A',
-      '--sidebar': '#281F2E', '--s-text': '#F5F4F6', '--s-dim': '#9885A3',
-      '--btn-shadow': '0 2px 8px rgba(132,78,162,.32)'
-    }
-  },
-  roseQuartz: {
-    name: 'Rose Quartz',
-    vars: {
-      '--parchment': '#F0EAEC', '--cream': '#F9F6F7', '--linen': '#E5DCDF',
-      '--terra': '#D34576', '--terra-dk': '#A82451', '--terra-lt': '#DEBAC6',
-      '--espresso': '#2E1F24', '--walnut': '#664752', '--ink': '#2E1F24', '--muted': '#9A7984',
-      '--sidebar': '#2E1F24', '--s-text': '#F6F4F4', '--s-dim': '#A3858F',
-      '--btn-shadow': '0 2px 8px rgba(211,69,118,.32)'
-    }
-  },
-  blueberryPlum: {
-    name: 'Blueberry Plum',
-    vars: {
-      '--parchment': '#EAEBF0', '--cream': '#F6F6F9', '--linen': '#DCDDE4',
-      '--terra': '#424494', '--terra-dk': '#282A61', '--terra-lt': '#BCBCDC',
-      '--espresso': '#1D1E34', '--walnut': '#44446A', '--ink': '#1D1E34', '--muted': '#77789C',
-      '--sidebar': '#1D1E34', '--s-text': '#F4F4F6', '--s-dim': '#8383A5',
-      '--btn-shadow': '0 2px 8px rgba(66,68,148,.32)'
-    }
-  },
-  sageGarden: {
-    name: 'Sage Garden',
-    vars: {
-      '--parchment': '#EDF0EA', '--cream': '#F7F9F6', '--linen': '#E0E4DC',
-      '--terra': '#69894D', '--terra-dk': '#435A2F', '--terra-lt': '#B0895C',
-      '--espresso': '#282F23', '--walnut': '#56614C', '--ink': '#282F23', '--muted': '#89977D',
-      '--sidebar': '#282F23', '--s-text': '#F5F6F4', '--s-dim': '#93A088',
-      '--btn-shadow': '0 2px 8px rgba(105,137,77,.32)'
-    }
-  },
   creamHoney: {
     name: 'Cream & Honey',
     vars: {
@@ -89,14 +49,14 @@ export const PALETTES = {
       '--btn-shadow': '0 2px 8px rgba(201,154,62,.32)'
     }
   },
-  creamSage: {
-    name: 'Cream & Sage',
+  creamPlum: {
+    name: 'Cream & Plum',
     vars: {
-      '--parchment': '#F6F4EA', '--cream': '#FEFDF9', '--linen': '#E9E8D9',
-      '--terra': '#7C9468', '--terra-dk': '#57703F', '--terra-lt': '#BFD1AC',
-      '--espresso': '#232819', '--walnut': '#4F5B3C', '--ink': '#232819', '--muted': '#8F9A7C',
-      '--sidebar': '#232819', '--s-text': '#F1F3E9', '--s-dim': '#77835F',
-      '--btn-shadow': '0 2px 8px rgba(124,148,104,.32)'
+      '--parchment': '#F6F3EC', '--cream': '#FEFDF9', '--linen': '#E9E4DA',
+      '--terra': '#8A5FA8', '--terra-dk': '#5B3B78', '--terra-lt': '#D3BFE0',
+      '--espresso': '#241C2C', '--walnut': '#5C4468', '--ink': '#241C2C', '--muted': '#96829F',
+      '--sidebar': '#241C2C', '--s-text': '#F1ECF3', '--s-dim': '#7C6685',
+      '--btn-shadow': '0 2px 8px rgba(138,95,168,.32)'
     }
   },
   creamSky: {
