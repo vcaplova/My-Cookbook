@@ -44,8 +44,8 @@ export const PALETTES = {
     vars: {
       '--parchment': '#F8F3E7', '--cream': '#FFFDF8', '--linen': '#F0E8D2',
       '--terra': '#D6872D', '--terra-dk': '#A3651A', '--terra-lt': '#EFC48A',
-      '--espresso': '#2E2717', '--walnut': '#6E5A34', '--ink': '#2E2717', '--muted': '#A0906D',
-      '--sidebar': '#2E2717', '--s-text': '#F5EFDD', '--s-dim': '#8A7A54',
+      '--espresso': '#2E2717', '--walnut': '#7A5A2E', '--ink': '#2E2717', '--muted': '#B08F5A',
+      '--sidebar': '#2E2717', '--s-text': '#F5EFDD', '--s-dim': '#A0824A',
       '--btn-shadow': '0 2px 8px rgba(214,135,45,.32)'
     }
   },
