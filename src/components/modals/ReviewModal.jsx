@@ -153,7 +153,7 @@ export default function ReviewModal({ open, draft, editingId, isManual, onClose,
           {collections.map((c) => (
             <label key={c.id} className={form.collections.includes(c.id) ? 'col-check on' : 'col-check'}>
               <input type="checkbox" checked={form.collections.includes(c.id)} onChange={() => toggleCol(c.id)} />
-              <span className="col-check-dot" style={{ background: c.color }}></span> {c.emoji || '🍽'} {c.name}
+              {c.emoji || '🍽'} {c.name}
             </label>
           ))}
         </div>
