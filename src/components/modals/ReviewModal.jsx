@@ -1,11 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLibrary } from '../../context/LibraryContext';
+import { compressImageFile, approxKB } from '../../lib/image';
 import { XIcon, PlusIcon, ImageIcon } from '../Icons';
 
 export default function ReviewModal({ open, draft, editingId, isManual, onClose, onBack }) {
   const { collections, addRecipe, updateRecipe, toast } = useLibrary();
   const [form, setForm] = useState(null);
   const [tagInput, setTagInput] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef(null);
 
   useEffect(() => {
     if (open && draft) {
@@ -42,6 +45,23 @@ export default function ReviewModal({ open, draft, editingId, isManual, onClose,
     ? form.collections.filter((c) => c !== id)
     : [...form.collections, id]);
 
+  const pickPhoto = () => fileRef.current?.click();
+  const onPhotoChosen = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setUploading(true);
+    try {
+      const dataUrl = await compressImageFile(file);
+      set('img', dataUrl);
+      toast(`Photo added (~${approxKB(dataUrl)}KB)`, true);
+    } catch (err) {
+      toast(err.message || 'Could not use that photo');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const save = () => {
     const title = form.title.trim();
     if (!title) { toast('Give the recipe a title first'); return; }
@@ -71,17 +91,24 @@ export default function ReviewModal({ open, draft, editingId, isManual, onClose,
         </div>
         <p className="modal-sub">Check everything looks right before saving.</p>
 
-        <div className="review-hero">
+        <div className="review-hero" style={{ cursor: uploading ? 'default' : 'pointer', position: 'relative' }} onClick={() => !uploading && pickPhoto()}>
           {form.img
             ? <img src={form.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.style.display = 'none'; }} />
             : <div className="review-hero-ph"><ImageIcon size={30} strokeWidth={1.5} /></div>}
+          <div className={form.img ? 'review-hero-overlay' : 'review-hero-overlay always'}>
+            {uploading ? 'Compressing…' : form.img ? 'Change photo' : 'Add a photo'}
+          </div>
+          <input type="file" accept="image/*" ref={fileRef} style={{ display: 'none' }} onChange={onPhotoChosen} />
         </div>
 
         <div className="review-grid">
           <div className="field full"><label>Recipe Title</label><input type="text" value={form.title} onChange={(e) => set('title', e.target.value)} /></div>
           <div className="field"><label>Cook Time</label><input type="text" value={form.cookTime} onChange={(e) => set('cookTime', e.target.value)} placeholder="e.g. 45m" /></div>
           <div className="field"><label>Servings</label><input type="number" min="1" value={form.servings} onChange={(e) => set('servings', e.target.value)} /></div>
-          <div className="field full"><label>Image URL</label><input type="url" value={form.img} onChange={(e) => set('img', e.target.value)} /></div>
+          <div className="field full">
+            <label>Image URL <span style={{ fontWeight: 400, color: 'var(--muted)' }}>(or use "Add a photo" above)</span></label>
+            <input type="url" value={form.img.startsWith('data:') ? '' : form.img} placeholder={form.img.startsWith('data:') ? 'Using an uploaded photo — paste a link to replace it' : ''} onChange={(e) => set('img', e.target.value)} />
+          </div>
         </div>
 
         <p className="sec-title">Ingredients</p>

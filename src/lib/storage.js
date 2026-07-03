@@ -22,8 +22,10 @@ export class LocalStorageAdapter {
   async saveLibrary(data) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ v: 1, ...data }));
+      return true;
     } catch (e) {
       console.warn('Could not save library:', e);
+      return false;
     }
   }
 

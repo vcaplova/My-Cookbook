@@ -52,17 +52,22 @@ export function LibraryProvider({ children }) {
     })();
   }, []);
 
-  // Persist on change
-  useEffect(() => {
-    if (!loaded) return;
-    storage.saveLibrary({ recipes, collections, nextId, view, globalTags });
-  }, [recipes, collections, nextId, view, globalTags, loaded]);
-
   const toast = useCallback((msg, ok = false) => {
     clearTimeout(toastTimer.current);
     setToastState({ msg, ok });
     toastTimer.current = setTimeout(() => setToastState(null), 2600);
   }, []);
+
+  // Persist on change
+  useEffect(() => {
+    if (!loaded) return;
+    (async () => {
+      const ok = await storage.saveLibrary({ recipes, collections, nextId, view, globalTags });
+      if (!ok) {
+        toast("Storage is full — this change wasn't saved. Try removing a photo or two.");
+      }
+    })();
+  }, [recipes, collections, nextId, view, globalTags, loaded, toast]);
 
   const confirm = useCallback((message, onConfirm, confirmLabel = 'Delete') => {
     setConfirmState({ message, onConfirm, confirmLabel });
