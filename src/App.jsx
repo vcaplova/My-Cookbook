@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { LibraryProvider, useLibrary } from './context/LibraryContext';
 import { TopBar, Sidebar, Toast, ConfirmDialog, BottomNav } from './components/Chrome';
 import LibraryPage from './pages/LibraryPage';
@@ -13,6 +13,8 @@ import './styles/app.css';
 
 function AppShell() {
   const { loaded } = useLibrary();
+  const location = useLocation();
+  const isDetailView = /^\/recipe\//.test(location.pathname);
 
   const [importOpen, setImportOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -30,7 +32,7 @@ function AppShell() {
 
   return (
     <>
-      <TopBar onAdd={openAdd} onSettings={() => setSettingsOpen(true)} />
+      <TopBar onAdd={openAdd} onSettings={() => setSettingsOpen(true)} minimal={isDetailView} />
       <div className="layout">
         <Sidebar onNewCollection={() => setColModal({ open: true, editId: null })} />
         <Routes>

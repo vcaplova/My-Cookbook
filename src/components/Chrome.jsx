@@ -6,33 +6,37 @@ import {
 } from './Icons';
 import { useState } from 'react';
 
-export function TopBar({ onAdd, onSettings }) {
+export function TopBar({ onAdd, onSettings, minimal }) {
   const { search, setSearch, view, setView, exportJSON, clearLibrary, confirm, toast, setFilter, setActiveTags } = useLibrary();
   const navigate = useNavigate();
   return (
-    <header className="topbar">
+    <header className={minimal ? 'topbar topbar-minimal' : 'topbar'}>
       <div className="brand" style={{ cursor: 'pointer' }} onClick={() => { setFilter('all'); setActiveTags([]); navigate('/'); }}>
         <div className="brand-icon"><BrandIcon /></div>
         <div className="brand-name">My Cookbook<small>Recipe Library</small></div>
       </div>
-      <div className="topbar-mid">
-        <div className="search-wrap">
-          <SearchIcon className="search-icon" />
-          <input type="text" placeholder="Search recipes, tags…" value={search} onChange={(e) => setSearch(e.target.value)} />
-        </div>
-      </div>
-      <div className="topbar-right">
-        <button className="btn-icon" title="Export library as JSON" onClick={exportJSON}><DownloadIcon /></button>
-        <button className="btn-icon" title="Clear library" onClick={() => confirm('Clear your entire library? This cannot be undone.', () => { clearLibrary(); toast('Library cleared', true); }, 'Clear')}><TrashIcon /></button>
-        <button className="btn-icon" title="Settings" onClick={onSettings}><SettingsIcon /></button>
-        <div className="view-toggle">
-          <button className={view === 'grid' ? 'vbtn on' : 'vbtn'} title="Grid" onClick={() => setView('grid')}><GridIcon /></button>
-          <button className={view === 'list' ? 'vbtn on' : 'vbtn'} title="List" onClick={() => setView('list')}><ListIcon /></button>
-        </div>
-        <button className="btn-add" onClick={onAdd}>
-          <PlusIcon stroke="#fff" /> <span className="btn-add-label">Add Recipe</span>
-        </button>
-      </div>
+      {!minimal && (
+        <>
+          <div className="topbar-mid">
+            <div className="search-wrap">
+              <SearchIcon className="search-icon" />
+              <input type="text" placeholder="Search recipes, tags…" value={search} onChange={(e) => setSearch(e.target.value)} />
+            </div>
+          </div>
+          <div className="topbar-right">
+            <button className="btn-icon" title="Export library as JSON" onClick={exportJSON}><DownloadIcon /></button>
+            <button className="btn-icon" title="Clear library" onClick={() => confirm('Clear your entire library? This cannot be undone.', () => { clearLibrary(); toast('Library cleared', true); }, 'Clear')}><TrashIcon /></button>
+            <button className="btn-icon" title="Settings" onClick={onSettings}><SettingsIcon /></button>
+            <div className="view-toggle">
+              <button className={view === 'grid' ? 'vbtn on' : 'vbtn'} title="Grid" onClick={() => setView('grid')}><GridIcon /></button>
+              <button className={view === 'list' ? 'vbtn on' : 'vbtn'} title="List" onClick={() => setView('list')}><ListIcon /></button>
+            </div>
+            <button className="btn-add" onClick={onAdd}>
+              <PlusIcon stroke="#fff" /> <span className="btn-add-label">Add Recipe</span>
+            </button>
+          </div>
+        </>
+      )}
     </header>
   );
 }
