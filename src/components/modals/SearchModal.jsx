@@ -27,7 +27,10 @@ export default function SearchModal({ open, onClose }) {
         <input
           ref={inputRef}
           type="text"
-          inputMode="search"
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck="false"
           placeholder="Search recipes, tags…"
           value={value}
           onChange={(e) => apply(e.target.value)}
