@@ -1,13 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import {
-  BrandIcon, SearchIcon, DownloadIcon, SettingsIcon,
+  BrandIcon, SearchIcon, SettingsIcon,
   GridIcon, ListIcon, PlusIcon, BookIcon, ClockIcon, StarIcon, WarnIcon,
 } from './Icons';
 import { useState } from 'react';
 
 export function TopBar({ onAdd, onSettings }) {
-  const { search, setSearch, view, setView, exportJSON, setFilter, setActiveTags } = useLibrary();
+  const { search, setSearch, view, setView, setFilter, setActiveTags } = useLibrary();
   const navigate = useNavigate();
   return (
     <header className="topbar">
@@ -22,7 +22,6 @@ export function TopBar({ onAdd, onSettings }) {
         </div>
       </div>
       <div className="topbar-right">
-        <button className="btn-icon" title="Export library as JSON" onClick={exportJSON}><DownloadIcon /></button>
         <button className="btn-icon" title="Settings" onClick={onSettings}><SettingsIcon /></button>
         <div className="view-toggle">
           <button className={view === 'grid' ? 'vbtn on' : 'vbtn'} title="Grid" onClick={() => setView('grid')}><GridIcon /></button>
