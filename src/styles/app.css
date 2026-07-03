@@ -32,23 +32,32 @@
 html,body { height: 100%; overflow: hidden; }
 body { font-family: var(--sans); background: var(--parchment); color: var(--ink); display: flex; flex-direction: column; height: 100vh; }
 
-/* ── TOP BAR ──────────────────────────────────────────── */
-.topbar {
-  position: fixed; top: 0; left: 0; right: 0; height: var(--th);
-  background: var(--cream); border-bottom: 1.5px solid var(--linen);
-  display: flex; align-items: center; z-index: 100;
-}
-.brand {
-  width: var(--sw); min-width: var(--sw); height: 100%;
-  display: flex; align-items: center; gap: 11px; padding: 0 20px;
-  border-right: 1.5px solid var(--linen); flex-shrink: 0;
-}
+/* ── APP SHELL ────────────────────────────────────────── */
+.app-shell { display: flex; height: 100vh; overflow: hidden; }
+.content-col { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; min-width: 0; }
+
+/* Brand — lives inside the sidebar on desktop, inside the page top bar on mobile */
 .brand-icon {
   width: 36px; height: 36px; background: var(--terra);
   border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.brand-name { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--espresso); line-height: 1.15; }
-.brand-name small { display: block; font-family: var(--sans); font-size: 9px; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+.sidebar-brand {
+  height: var(--th); flex-shrink: 0; cursor: pointer;
+  display: flex; align-items: center; gap: 11px; padding: 0 20px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.sidebar-brand .brand-name { color: var(--s-text); }
+.sidebar-brand .brand-name small { color: var(--s-dim); }
+.brand-name { font-family: var(--serif); font-size: 16px; font-weight: 700; line-height: 1.15; }
+.brand-name small { display: block; font-family: var(--sans); font-size: 9px; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; margin-top: 2px; }
+.mobile-brand { display: none; }
+
+/* Page top bar — sits at the top of the content column only, not full page width */
+.page-topbar {
+  height: var(--th); flex-shrink: 0;
+  background: var(--cream); border-bottom: 1.5px solid var(--linen);
+  display: flex; align-items: center;
+}
 .topbar-mid { flex: 1; padding: 0 24px; display: flex; align-items: center; }
 .search-wrap { width: 100%; max-width: 460px; position: relative; }
 .search-wrap input {
@@ -59,7 +68,7 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 .search-wrap input::placeholder { color: var(--muted); }
 .search-wrap input:focus { border-color: var(--terra); background: var(--cream); }
 .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
-.topbar-right { display: flex; align-items: center; gap: 12px; padding-right: 24px; flex-shrink: 0; }
+.topbar-right { display: flex; align-items: center; gap: 12px; padding-right: 24px; flex-shrink: 0; margin-left: auto; }
 .view-toggle { display: flex; gap: 2px; background: var(--linen); border-radius: var(--r-sm); padding: 3px; }
 .vbtn { width: 32px; height: 32px; border: none; background: transparent; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); transition: background .15s, color .15s; }
 .vbtn.on { background: var(--cream); color: var(--terra); box-shadow: 0 1px 4px rgba(46,31,15,.12); }
@@ -73,18 +82,17 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 .btn-add:hover { background: var(--terra-dk); transform: translateY(-1px); }
 .btn-add:active { transform: none; }
 
-/* ── LAYOUT ───────────────────────────────────────────── */
-.layout { display: flex; margin-top: var(--th); height: calc(100vh - var(--th)); overflow: hidden; }
-
 /* ── SIDEBAR ──────────────────────────────────────────── */
 .sidebar {
   width: var(--sw); min-width: var(--sw); background: var(--sidebar);
-  height: 100%; overflow-y: auto; display: flex; flex-direction: column;
-  padding: 28px 0 40px; flex-shrink: 0;
+  height: 100%; display: flex; flex-direction: column; flex-shrink: 0;
+}
+.sidebar-scroll {
+  flex: 1; overflow-y: auto; padding: 20px 0 40px;
   scrollbar-width: thin; scrollbar-color: #4a3020 transparent;
 }
-.sidebar::-webkit-scrollbar { width: 4px; }
-.sidebar::-webkit-scrollbar-thumb { background: #4a3020; border-radius: 4px; }
+.sidebar-scroll::-webkit-scrollbar { width: 4px; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: #4a3020; border-radius: 4px; }
 .sb-label { font-size: 9px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--s-dim); padding: 0 20px 10px; }
 .sb-divider { height: 1px; background: rgba(255,255,255,.07); margin: 12px 20px; }
 
@@ -374,14 +382,11 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 
 /* ── DETAIL PANEL ─────────────────────────────────────── */
 .detail-panel {
-  position: fixed; inset: 0; z-index: 150; display: none;
-  align-items: stretch; pointer-events: none;
+  display: none; flex-direction: column; flex: 1; overflow: hidden; min-height: 0;
 }
-.detail-panel.open { display: flex; pointer-events: all; }
-.detail-back-drop { position: absolute; inset: 0; background: rgba(20,10,4,.42); }
+.detail-panel.open { display: flex; }
 .detail-sheet {
-  position: relative; margin-left: auto;
-  width: calc(100vw - var(--sw)); height: 100%;
+  width: 100%; height: 100%;
   background: var(--parchment); display: flex; flex-direction: column; overflow: hidden;
 }
 .detail-bar {
@@ -476,9 +481,8 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 @media (max-width: 768px) {
   :root { --sw: 0px; --th: 56px; }
 
-  /* Top bar: compact */
-  .brand { width: auto; min-width: auto; border-right: none; padding: 0 14px; }
-  .brand-name small { display: none; }
+  /* Top bar: compact, with a fallback brand icon since the sidebar (and its brand) is hidden */
+  .mobile-brand { display: flex; align-items: center; padding: 0 10px 0 14px; cursor: pointer; }
   .topbar-mid { padding: 0 10px; }
   .search-wrap input { font-size: 13px; }
   .topbar-right { padding-right: 10px; gap: 8px; }
@@ -490,7 +494,6 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
   .sidebar { display: none; }
 
   /* Main fills full width */
-  .layout { margin-top: var(--th); }
   .main { padding: 20px 16px 90px; } /* bottom padding for nav */
 
   /* Bottom nav */

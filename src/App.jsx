@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { LibraryProvider, useLibrary } from './context/LibraryContext';
 import { TopBar, Sidebar, Toast, ConfirmDialog, BottomNav } from './components/Chrome';
 import LibraryPage from './pages/LibraryPage';
@@ -13,6 +13,8 @@ import './styles/app.css';
 
 function AppShell() {
   const { loaded } = useLibrary();
+  const location = useLocation();
+  const isDetailView = /^\/recipe\//.test(location.pathname);
 
   const [importOpen, setImportOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -30,20 +32,18 @@ function AppShell() {
 
   return (
     <>
-      <TopBar onAdd={openAdd} onSettings={() => setSettingsOpen(true)} />
-      <div className="layout">
+      <div className="app-shell">
         <Sidebar onNewCollection={() => setColModal({ open: true, editId: null })} />
-        <Routes>
-          <Route path="/" element={<LibraryPage onAdd={openAdd} />} />
-        </Routes>
+        <div className="content-col">
+          <Routes>
+            <Route path="/" element={<><TopBar onAdd={openAdd} onSettings={() => setSettingsOpen(true)} /><LibraryPage onAdd={openAdd} /></>} />
+            <Route path="/recipe/:id" element={<RecipePage onEdit={editRecipe} />} />
+            <Route path="/recipe/:id/cook" element={<CookPage />} />
+          </Routes>
+        </div>
       </div>
-      <Routes>
-        <Route path="/" element={null} />
-        <Route path="/recipe/:id" element={<RecipePage onEdit={editRecipe} />} />
-        <Route path="/recipe/:id/cook" element={<CookPage />} />
-      </Routes>
 
-      <BottomNav onNewCollection={() => setColModal({ open: true, editId: null })} />
+      {!isDetailView && <BottomNav onNewCollection={() => setColModal({ open: true, editId: null })} />}
 
       <ImportModal open={importOpen} onClose={() => setImportOpen(false)} onDraft={openDraft} />
       <ReviewModal

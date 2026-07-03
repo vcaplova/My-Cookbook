@@ -10,10 +10,9 @@ export function TopBar({ onAdd, onSettings }) {
   const { search, setSearch, view, setView, exportJSON, clearLibrary, confirm, toast, setFilter, setActiveTags } = useLibrary();
   const navigate = useNavigate();
   return (
-    <header className="topbar">
-      <div className="brand" style={{ cursor: 'pointer' }} onClick={() => { setFilter('all'); setActiveTags([]); navigate('/'); }}>
+    <header className="page-topbar">
+      <div className="mobile-brand" onClick={() => { setFilter('all'); setActiveTags([]); navigate('/'); }}>
         <div className="brand-icon"><BrandIcon /></div>
-        <div className="brand-name">My Cookbook<small>Recipe Library</small></div>
       </div>
       <div className="topbar-mid">
         <div className="search-wrap">
@@ -49,6 +48,11 @@ export function Sidebar({ onNewCollection }) {
   const go = (f) => { setFilter(f); navigate('/'); };
   return (
     <nav className="sidebar">
+      <div className="sidebar-brand" onClick={() => go('all')}>
+        <div className="brand-icon"><BrandIcon /></div>
+        <div className="brand-name">My Cookbook<small>Recipe Library</small></div>
+      </div>
+      <div className="sidebar-scroll">
       <div>
         <p className="sb-label">Library</p>
         <div className={filter === 'all' ? 'nav-item active' : 'nav-item'} onClick={() => go('all')}>
@@ -86,6 +90,7 @@ export function Sidebar({ onNewCollection }) {
         <button className="btn-new-col" onClick={onNewCollection}>
           <PlusIcon size={13} strokeWidth={2.5} /> New collection
         </button>
+      </div>
       </div>
     </nav>
   );
