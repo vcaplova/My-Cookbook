@@ -476,9 +476,10 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
   :root { --sw: 0px; --th: 56px; }
 
   /* Top bar: compact */
-  .brand { width: auto; min-width: auto; border-right: none; padding: 0 14px; }
-  .brand-name small { display: none; }
+  .brand { width: auto; min-width: auto; border-right: none; padding: 0 12px; }
+  .brand-name { display: none; }
   .topbar-mid { padding: 0 10px; }
+  .search-wrap { max-width: none; }
   .search-wrap input { font-size: 13px; }
   .topbar-right { padding-right: 10px; gap: 8px; }
   .btn-add-label { display: none; }
