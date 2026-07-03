@@ -73,10 +73,10 @@ export const PALETTES = {
     name: 'Cream & Berry',
     vars: {
       '--parchment': '#F7F2ED', '--cream': '#FFFCF9', '--linen': '#EEE3DB',
-      '--terra': '#BD3245', '--terra-dk': '#882031', '--terra-lt': '#E0AEB4',
-      '--espresso': '#31161B', '--walnut': '#72313C', '--ink': '#31161B', '--muted': '#BD6B76',
-      '--sidebar': '#31161B', '--s-text': '#F6ECEE', '--s-dim': '#AA4653',
-      '--btn-shadow': '0 2px 8px rgba(189,50,69,.32)'
+      '--terra': '#E1608B', '--terra-dk': '#C2295C', '--terra-lt': '#F3C8D7',
+      '--espresso': '#321B22', '--walnut': '#75384D', '--ink': '#321B22', '--muted': '#C57794',
+      '--sidebar': '#321B22', '--s-text': '#F6ECEE', '--s-dim': '#B85177',
+      '--btn-shadow': '0 2px 8px rgba(225,96,139,.32)'
     }
   }
 };
