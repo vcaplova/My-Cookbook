@@ -241,19 +241,39 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 .field-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
 .field-input {
   width: 100%; height: 50px; background: var(--parchment); border: 1.5px solid var(--linen);
-  border-radius: var(--r-md); padding: 0 40px 0 46px; font-family: var(--sans); font-size: 14px;
+  border-radius: var(--r-md); padding: 0 16px 0 46px; font-family: var(--sans); font-size: 14px;
   color: var(--ink); outline: none; transition: border-color .18s;
 }
 .field-input::placeholder { color: var(--muted); }
 .field-input:focus { border-color: var(--terra); background: var(--cream); }
-.search-modal-clear {
-  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-  width: 26px; height: 26px; border-radius: 50%; border: none;
-  background: var(--linen); color: var(--muted); cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .15s, color .15s;
+/* ── MOBILE SEARCH POPUP ──────────────────────────────── */
+/* Just an enlarged version of the compact search pill itself — no title,
+   no description, no button. Type, hit enter or tap outside to apply. */
+.search-popup-back {
+  position: fixed; inset: 0; z-index: 220; display: none;
+  align-items: flex-start; justify-content: center;
+  padding: 70px 20px 0; background: rgba(20,10,4,.38);
+  opacity: 0; transition: opacity .18s;
 }
-.search-modal-clear:hover { background: var(--terra); color: #fff; }
+.search-popup-back.open { display: flex; opacity: 1; }
+.search-popup {
+  width: 100%; max-width: 480px; height: 54px;
+  background: var(--linen); border-radius: 99px;
+  display: flex; align-items: center; padding: 0 16px 0 48px;
+  position: relative; box-shadow: 0 16px 40px rgba(20,10,4,.28);
+}
+.search-popup-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.search-popup input {
+  flex: 1; border: none; background: transparent; outline: none;
+  font-family: var(--sans); font-size: 16px; color: var(--ink); min-width: 0;
+}
+.search-popup input::placeholder { color: var(--muted); }
+.search-popup-clear {
+  width: 26px; height: 26px; border-radius: 50%; border: none; flex-shrink: 0;
+  background: rgba(0,0,0,.08); color: var(--muted); cursor: pointer; margin-left: 6px;
+  display: flex; align-items: center; justify-content: center; transition: background .15s;
+}
+.search-popup-clear:hover { background: var(--terra); color: #fff; }
 .btn-primary {
   width: 100%; height: 48px; background: var(--terra); color: #fff; border: none;
   border-radius: var(--r-md); font-family: var(--sans); font-size: 15px; font-weight: 700;
