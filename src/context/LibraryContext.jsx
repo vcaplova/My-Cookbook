@@ -15,6 +15,7 @@ export function LibraryProvider({ children }) {
 
   // View/filter state
   const [view, setView] = useState('grid');
+  const [unitMode, setUnitMode] = useState('original');
   const [filter, setFilter] = useState('all'); // 'all' | 'recent' | 'favourites' | 'col:<id>'
   const [activeTags, setActiveTags] = useState([]);
   const [search, setSearch] = useState('');
@@ -224,7 +225,7 @@ export function LibraryProvider({ children }) {
     loaded, recipes, collections, filtered, allTags,
     view, setView, filter, setFilter, activeTags, setActiveTags,
     search, setSearch, maxTime, setMaxTime, servingsBand, setServingsBand,
-    palette, setPalette,
+    palette, setPalette, unitMode, setUnitMode,
     addRecipe, updateRecipe, deleteRecipe, toggleStar, togglePin,
     addCollection, updateCollection, deleteCollection, colById,
     renameTag, removeTag, clearLibrary, exportJSON,

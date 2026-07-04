@@ -8,11 +8,10 @@ import { ChevronLeft, ListIcon, FlameIcon, EditIcon, TrashIcon, PinIcon, StarIco
 export default function RecipePage({ onEdit }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { recipes, colById, toggleStar, togglePin, deleteRecipe, confirm, toast } = useLibrary();
+  const { recipes, colById, toggleStar, togglePin, deleteRecipe, confirm, toast, unitMode, setUnitMode } = useLibrary();
   const recipe = recipes.find((r) => r.id === Number(id));
 
   const [servings, setServings] = useState(recipe?.servings || 4);
-  const [unitMode, setUnitMode] = useState('original');
 
   useEffect(() => {
     if (recipe) { setServings(recipe.servings || 4); setUnitMode('original'); }

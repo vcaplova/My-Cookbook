@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import { scaleIng, getStepIngs, extractTimerFromStep, formatTimerTime } from '../lib/utils';
+import { convertIngredient } from '../lib/units';
 import { ChevronLeft, ChevronRight, ListIcon, FlameIcon, EditIcon, TrashIcon, PinIcon, StarIcon } from '../components/Icons';
 
 const CIRCUMFERENCE = 2 * Math.PI * 32;
@@ -83,11 +84,16 @@ function CookTimer({ min, max }) {
 export default function CookPage({ onEdit }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { recipes, toggleStar, togglePin, deleteRecipe, confirm, toast } = useLibrary();
+  const { recipes, toggleStar, togglePin, deleteRecipe, confirm, toast, unitMode } = useLibrary();
   const recipe = recipes.find((r) => r.id === Number(id));
   const [step, setStep] = useState(0);
   const scaledServings = recipe?.servings || 4;
   const baseServings = recipe?.servings || 4;
+
+  useEffect(() => {
+    setStep(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   useEffect(() => {
     const onKey = (e) => {
@@ -147,7 +153,7 @@ export default function CookPage({ onEdit }) {
               <div className="cook-ing-title">Ingredients for this step</div>
               <div className="cook-ings">
                 {ings.length
-                  ? ings.map((i, k) => <span key={k} className="cook-ing-chip">{scaleIng(i, ratio)}</span>)
+                  ? ings.map((i, k) => <span key={k} className="cook-ing-chip">{convertIngredient(scaleIng(i, ratio), unitMode)}</span>)
                   : <span className="cook-no-ing">No specific ingredients for this step</span>}
               </div>
               <div className="cook-step-text">{stepText}</div>
@@ -160,7 +166,7 @@ export default function CookPage({ onEdit }) {
                 <div className="cook-next-label">Up next</div>
                 <div className="cook-next-ing-label">Ingredients needed</div>
                 <div className="cook-next-chips">
-                  {nextIngs.map((i, k) => <span key={k} className="cook-ing-chip">{scaleIng(i, ratio)}</span>)}
+                  {nextIngs.map((i, k) => <span key={k} className="cook-ing-chip">{convertIngredient(scaleIng(i, ratio), unitMode)}</span>)}
                 </div>
                 <div className="cook-next-text">{steps[step + 1]}</div>
               </div>
