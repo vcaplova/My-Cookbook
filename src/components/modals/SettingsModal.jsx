@@ -35,7 +35,7 @@ export default function SettingsModal({ open, onClose }) {
 
         <div className="settings-section">
           <p className="settings-label">Your Library</p>
-          <button className="btn-secondary" style={{ width: 'auto', display: 'inline-flex', alignItems: 'center', gap: 8 }} onClick={exportJSON}>
+          <button className="btn-secondary" style={{ width: 'auto', display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 20px' }} onClick={exportJSON}>
             <DownloadIcon size={15} /> Export library as JSON
           </button>
           <p className="settings-hint" style={{ marginTop: 8 }}>Downloads a backup of all your recipes and collections.</p>
