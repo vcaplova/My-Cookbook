@@ -3,12 +3,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import { scaleIng } from '../lib/utils';
 import { convertIngredient } from '../lib/units';
-import { ChevronLeft, ListIcon, FlameIcon, EditIcon, TrashIcon, PinIcon, StarIcon, UnitIcon, ImageIcon, ShoppingBagIcon, PlusIcon } from '../components/Icons';
+import { ChevronLeft, ListIcon, FlameIcon, EditIcon, TrashIcon, PinIcon, StarIcon, UnitIcon, ImageIcon, ShoppingBagIcon, PlusIcon, MinusIcon } from '../components/Icons';
 
 export default function RecipePage({ onEdit }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { recipes, colById, toggleStar, togglePin, deleteRecipe, confirm, toast, unitMode, setUnitMode, addToShoppingList, addAllToShoppingList } = useLibrary();
+  const { recipes, colById, toggleStar, togglePin, deleteRecipe, confirm, toast, unitMode, setUnitMode, shoppingList, addToShoppingList, addAllToShoppingList, removeFromShoppingListByText } = useLibrary();
   const recipe = recipes.find((r) => r.id === Number(id));
 
   const [servings, setServings] = useState(recipe?.servings || 4);
@@ -122,12 +122,17 @@ export default function RecipePage({ onEdit }) {
             <div>
               {recipe.ingredients.map((ing, i) => {
                 const displayText = convertIngredient(scaleIng(ing, ratio), unitMode);
+                const inList = shoppingList.some((item) => item.recipeId === recipe.id && item.text === displayText);
                 return (
                   <div key={i} className="ing-item">
                     <span className="ing-dot"></span>
                     <span style={{ flex: 1 }}>{displayText}</span>
-                    <button className="ing-add-btn" title="Add to shopping list" onClick={() => addToShoppingList(recipe.id, recipe.title, displayText)}>
-                      <PlusIcon size={11} strokeWidth={2.5} />
+                    <button
+                      className={inList ? 'ing-add-btn added' : 'ing-add-btn'}
+                      title={inList ? 'Remove from shopping list' : 'Add to shopping list'}
+                      onClick={() => (inList ? removeFromShoppingListByText(recipe.id, displayText) : addToShoppingList(recipe.id, recipe.title, displayText))}
+                    >
+                      {inList ? <MinusIcon size={11} strokeWidth={2.5} stroke="#fff" /> : <PlusIcon size={11} strokeWidth={2.5} />}
                     </button>
                   </div>
                 );

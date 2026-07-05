@@ -482,6 +482,8 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
   transition: background .15s, color .15s, border-color .15s;
 }
 .ing-add-btn:hover { background: var(--terra); border-color: var(--terra); color: #fff; }
+.ing-add-btn.added { background: var(--espresso); border-color: var(--espresso); color: #fff; }
+.ing-add-btn.added:hover { background: var(--terra-dk); border-color: var(--terra-dk); }
 .btn-add-all-shop {
   display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px;
   background: var(--linen); border: none; border-radius: 99px; color: var(--walnut);
