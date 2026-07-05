@@ -481,18 +481,20 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
   background: none; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center;
   transition: background .15s, color .15s, border-color .15s;
 }
-.ing-add-btn:hover { background: var(--terra); border-color: var(--terra); color: #fff; }
 .ing-add-btn.added { background: var(--terra); border-color: var(--terra); color: #fff; }
-.ing-add-btn.added:hover { background: var(--terra-dk); border-color: var(--terra-dk); }
 .btn-add-all-shop {
   display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px;
   background: var(--linen); border: none; border-radius: 99px; color: var(--walnut);
   font-family: var(--sans); font-size: 12px; font-weight: 700; cursor: pointer;
   transition: background .15s, color .15s;
 }
-.btn-add-all-shop:hover { background: var(--terra); color: #fff; }
 .btn-add-all-shop.added { background: var(--terra); color: #fff; }
-.btn-add-all-shop.added:hover { background: var(--terra-dk); }
+@media (hover: hover) and (pointer: fine) {
+  .ing-add-btn:hover { background: var(--terra); border-color: var(--terra); color: #fff; }
+  .ing-add-btn.added:hover { background: var(--terra-dk); border-color: var(--terra-dk); }
+  .btn-add-all-shop:hover { background: var(--terra); color: #fff; }
+  .btn-add-all-shop.added:hover { background: var(--terra-dk); }
+}
 .scroll-right { flex: 1; overflow-y: auto; padding: 28px 36px 60px; scrollbar-width: thin; }
 .scroll-right::-webkit-scrollbar { width: 4px; }
 .scroll-right::-webkit-scrollbar-thumb { background: var(--linen); }
