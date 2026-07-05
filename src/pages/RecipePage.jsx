@@ -118,7 +118,7 @@ export default function RecipePage({ onEdit }) {
                     ? removeManyFromShoppingList(recipe.id, displayIngredients)
                     : addAllToShoppingList(recipe.id, recipe.title, displayIngredients))}
                 >
-                  <ShoppingBagIcon size={13} /> {allIngredientsInList ? 'Remove all' : 'Add all'}
+                  <ShoppingBagIcon size={13} /> {allIngredientsInList ? 'Remove' : 'Add all'}
                 </button>
                 <button className={unitMode === 'metric' ? 'btn-unit-toggle metric' : 'btn-unit-toggle'} title="Convert units"
                   onClick={() => setUnitMode((m) => (m === 'original' ? 'metric' : 'original'))}>
