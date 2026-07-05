@@ -560,12 +560,13 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
   .search-fake-input { font-size: 13.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .search-fake-input.has-value { color: var(--ink); font-weight: 600; }
 
-  /* Expanded search: needs to read as clearly tan/warm, not white —
-     --linen and --cream are visually very close to each other and to white,
-     so this uses a bolder border and a warmer background to stand out. */
+  /* Expanded search: uses the palette's own --linen so it adapts correctly
+     across all colour themes. The 2px --terra border (always a saturated
+     accent colour, never close to white) provides the visibility/contrast
+     that --linen alone might lack against --cream in some palettes. */
   .topbar-search-active { padding: 0 14px; gap: 10px; background: var(--cream); }
   .search-wrap-expanded {
-    flex: 1; min-width: 0; height: 40px; background: #E4D5B7; border: 2px solid var(--terra);
+    flex: 1; min-width: 0; height: 40px; background: var(--linen); border: 2px solid var(--terra);
     border-radius: 99px; padding: 0 16px 0 42px; position: relative; display: flex; align-items: center;
   }
   .search-wrap-expanded input {
