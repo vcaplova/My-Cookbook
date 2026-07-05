@@ -105,6 +105,11 @@ export const WarnIcon = ({ size = 24, strokeWidth = 2 }) => (
     <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
   </svg>
 );
+export const ShoppingBagIcon = ({ size = 16, strokeWidth = 2 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" />
+  </svg>
+);
 export const UnitIcon = ({ size = 11, strokeWidth = 2.5 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" {...base} strokeWidth={strokeWidth}>
     <path d="M7 16V4m0 0L3 8m4-4 4 4" /><path d="M17 8v12m0 0 4-4m-4 4-4-4" />

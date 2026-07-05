@@ -1,8 +1,8 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import {
   BrandIcon, SearchIcon, SettingsIcon,
-  GridIcon, ListIcon, PlusIcon, BookIcon, ClockIcon, StarIcon, WarnIcon,
+  GridIcon, ListIcon, PlusIcon, BookIcon, ClockIcon, StarIcon, WarnIcon, ShoppingBagIcon,
 } from './Icons';
 import { useState } from 'react';
 import { useIsMobile } from '../lib/useIsMobile';
@@ -75,8 +75,9 @@ export function TopBar({ onAdd, onSettings }) {
 }
 
 export function Sidebar({ onNewCollection }) {
-  const { recipes, collections, filter, setFilter } = useLibrary();
+  const { recipes, collections, filter, setFilter, shoppingList } = useLibrary();
   const navigate = useNavigate();
+  const location = useLocation();
   const now = Date.now();
   const counts = {
     all: recipes.length,
@@ -84,24 +85,30 @@ export function Sidebar({ onNewCollection }) {
     fav: recipes.filter((r) => r.starred).length,
   };
   const go = (f) => { setFilter(f); navigate('/'); };
+  const isShoppingList = location.pathname === '/shopping-list';
   return (
     <nav className="sidebar">
       <div>
         <p className="sb-label">Library</p>
-        <div className={filter === 'all' ? 'nav-item active' : 'nav-item'} onClick={() => go('all')}>
+        <div className={!isShoppingList && filter === 'all' ? 'nav-item active' : 'nav-item'} onClick={() => go('all')}>
           <span className="nav-icon"><BookIcon /></span>
           <span className="nav-text">All Recipes</span>
           <span className="nav-count">{counts.all}</span>
         </div>
-        <div className={filter === 'recent' ? 'nav-item active' : 'nav-item'} onClick={() => go('recent')}>
+        <div className={!isShoppingList && filter === 'recent' ? 'nav-item active' : 'nav-item'} onClick={() => go('recent')}>
           <span className="nav-icon"><ClockIcon /></span>
           <span className="nav-text">Recently Added</span>
           <span className="nav-count">{counts.recent}</span>
         </div>
-        <div className={filter === 'favourites' ? 'nav-item active' : 'nav-item'} onClick={() => go('favourites')}>
+        <div className={!isShoppingList && filter === 'favourites' ? 'nav-item active' : 'nav-item'} onClick={() => go('favourites')}>
           <span className="nav-icon"><StarIcon /></span>
           <span className="nav-text">Favourites</span>
           <span className="nav-count">{counts.fav}</span>
+        </div>
+        <div className={isShoppingList ? 'nav-item active' : 'nav-item'} onClick={() => navigate('/shopping-list')}>
+          <span className="nav-icon"><ShoppingBagIcon /></span>
+          <span className="nav-text">Shopping List</span>
+          {shoppingList.length > 0 && <span className="nav-count">{shoppingList.length}</span>}
         </div>
       </div>
       <div className="sb-divider"></div>
@@ -155,18 +162,23 @@ export function ConfirmDialog() {
 }
 
 export function BottomNav({ onNewCollection }) {
-  const { filter, setFilter, collections } = useLibrary();
+  const { filter, setFilter, collections, shoppingList } = useLibrary();
   const [sheetOpen, setSheetOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const go = (f) => { setFilter(f); setSheetOpen(false); navigate('/'); };
   const isCol = filter.indexOf('col:') === 0;
+  const isShoppingList = location.pathname === '/shopping-list';
   return (
     <>
       <div className="bottom-nav">
-        <button className={filter === 'all' ? 'bnav-item active' : 'bnav-item'} onClick={() => go('all')}><BookIcon size={20} /> All</button>
-        <button className={filter === 'recent' ? 'bnav-item active' : 'bnav-item'} onClick={() => go('recent')}><ClockIcon size={20} /> Recent</button>
-        <button className={filter === 'favourites' ? 'bnav-item active' : 'bnav-item'} onClick={() => go('favourites')}><StarIcon size={20} /> Favs</button>
-        <button className={isCol || sheetOpen ? 'bnav-item active' : 'bnav-item'} onClick={() => setSheetOpen((o) => !o)}><ListIcon size={20} strokeWidth={2} /> Collections</button>
+        <button className={!isShoppingList && filter === 'all' ? 'bnav-item active' : 'bnav-item'} onClick={() => go('all')}><BookIcon size={20} /> All</button>
+        <button className={!isShoppingList && filter === 'recent' ? 'bnav-item active' : 'bnav-item'} onClick={() => go('recent')}><ClockIcon size={20} /> Recent</button>
+        <button className={!isShoppingList && filter === 'favourites' ? 'bnav-item active' : 'bnav-item'} onClick={() => go('favourites')}><StarIcon size={20} /> Favs</button>
+        <button className={!isShoppingList && isCol || sheetOpen ? 'bnav-item active' : 'bnav-item'} onClick={() => setSheetOpen((o) => !o)}><ListIcon size={20} strokeWidth={2} /> Collections</button>
+        <button className={isShoppingList ? 'bnav-item active' : 'bnav-item'} onClick={() => { setSheetOpen(false); navigate('/shopping-list'); }}>
+          <ShoppingBagIcon size={20} /> List
+        </button>
       </div>
       <div className={sheetOpen ? 'col-sheet-back open' : 'col-sheet-back'} onClick={() => setSheetOpen(false)}></div>
       <div className={sheetOpen ? 'col-sheet open' : 'col-sheet'}>

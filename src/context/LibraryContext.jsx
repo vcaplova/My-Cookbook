@@ -11,6 +11,7 @@ export function LibraryProvider({ children }) {
   const [collections, setCollections] = useState([]);
   const [globalTags, setGlobalTags] = useState([]);
   const [nextId, setNextId] = useState(1);
+  const [shoppingList, setShoppingList] = useState([]);
   const [loaded, setLoaded] = useState(false);
 
   // View/filter state
@@ -39,6 +40,7 @@ export function LibraryProvider({ children }) {
         setCollections(Array.isArray(data.collections) && data.collections.length ? data.collections : SEED_COLLECTIONS);
         setGlobalTags(Array.isArray(data.globalTags) ? data.globalTags : []);
         setNextId(typeof data.nextId === 'number' ? data.nextId : 100);
+        setShoppingList(Array.isArray(data.shoppingList) ? data.shoppingList : []);
         if (data.view === 'list') setView('list');
       } else {
         setRecipes(SEED_RECIPES);
@@ -63,12 +65,12 @@ export function LibraryProvider({ children }) {
   useEffect(() => {
     if (!loaded) return;
     (async () => {
-      const ok = await storage.saveLibrary({ recipes, collections, nextId, view, globalTags });
+      const ok = await storage.saveLibrary({ recipes, collections, nextId, view, globalTags, shoppingList });
       if (!ok) {
         toast("Storage is full — this change wasn't saved. Try removing a photo or two.");
       }
     })();
-  }, [recipes, collections, nextId, view, globalTags, loaded, toast]);
+  }, [recipes, collections, nextId, view, globalTags, shoppingList, loaded, toast]);
 
   const confirm = useCallback((message, onConfirm, confirmLabel = 'Delete') => {
     setConfirmState({ message, onConfirm, confirmLabel });
@@ -158,6 +160,56 @@ export function LibraryProvider({ children }) {
     setActiveTags((ts) => ts.filter((t) => t !== tag));
   }, []);
 
+  // ── Shopping list ────────────────────────────────
+  const shoppingListRef = useRef(shoppingList);
+  useEffect(() => { shoppingListRef.current = shoppingList; }, [shoppingList]);
+
+  const addToShoppingList = useCallback((recipeId, recipeTitle, text) => {
+    const already = shoppingListRef.current.some((i) => i.recipeId === recipeId && i.text === text);
+    if (already) {
+      toast('Already on your shopping list');
+      return;
+    }
+    setShoppingList((list) => [...list, { id: Date.now() + Math.random(), recipeId, recipeTitle, text, checked: false }]);
+    toast('Added to shopping list', true);
+  }, [toast]);
+
+  const addAllToShoppingList = useCallback((recipeId, recipeTitle, ingredientTexts) => {
+    const existing = shoppingListRef.current.filter((i) => i.recipeId === recipeId).map((i) => i.text);
+    const newOnes = ingredientTexts.filter((ing) => !existing.includes(ing));
+    if (!newOnes.length) {
+      toast('All ingredients are already on your list');
+      return;
+    }
+    setShoppingList((list) => [
+      ...list,
+      ...newOnes.map((text) => ({ id: Date.now() + Math.random(), recipeId, recipeTitle, text, checked: false })),
+    ]);
+    toast(`Added ${newOnes.length} ingredient${newOnes.length > 1 ? 's' : ''} to shopping list`, true);
+  }, [toast]);
+
+  const toggleShoppingItem = useCallback((itemId) => {
+    setShoppingList((list) => list.map((i) => (i.id === itemId ? { ...i, checked: !i.checked } : i)));
+  }, []);
+
+  const removeShoppingItem = useCallback((itemId) => {
+    setShoppingList((list) => list.filter((i) => i.id !== itemId));
+  }, []);
+
+  const addManualShoppingItem = useCallback((text) => {
+    const t = text.trim();
+    if (!t) return;
+    setShoppingList((list) => [...list, { id: Date.now() + Math.random(), recipeId: null, recipeTitle: null, text: t, checked: false }]);
+  }, []);
+
+  const clearCheckedShoppingItems = useCallback(() => {
+    setShoppingList((list) => list.filter((i) => !i.checked));
+  }, []);
+
+  const clearShoppingList = useCallback(() => {
+    setShoppingList([]);
+  }, []);
+
   // ── Library-level actions ──────────────────────
   const clearLibrary = useCallback(() => {
     storage.clearLibrary();
@@ -229,6 +281,8 @@ export function LibraryProvider({ children }) {
     addRecipe, updateRecipe, deleteRecipe, toggleStar, togglePin,
     addCollection, updateCollection, deleteCollection, colById,
     renameTag, removeTag, clearLibrary, exportJSON,
+    shoppingList, addToShoppingList, addAllToShoppingList, toggleShoppingItem,
+    removeShoppingItem, addManualShoppingItem, clearCheckedShoppingItems, clearShoppingList,
     toastState, toast, confirmState, setConfirmState, confirm,
   };
 

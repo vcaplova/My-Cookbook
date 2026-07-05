@@ -3,6 +3,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import { LibraryProvider, useLibrary } from './context/LibraryContext';
 import { TopBar, Sidebar, Toast, ConfirmDialog, BottomNav } from './components/Chrome';
 import LibraryPage from './pages/LibraryPage';
+import ShoppingListPage from './pages/ShoppingListPage';
 import RecipePage from './pages/RecipePage';
 import CookPage from './pages/CookPage';
 import ImportModal from './components/modals/ImportModal';
@@ -35,10 +36,12 @@ function AppShell() {
         <Sidebar onNewCollection={() => setColModal({ open: true, editId: null })} />
         <Routes>
           <Route path="/" element={<LibraryPage onAdd={openAdd} />} />
+          <Route path="/shopping-list" element={<ShoppingListPage />} />
         </Routes>
       </div>
       <Routes>
         <Route path="/" element={null} />
+        <Route path="/shopping-list" element={null} />
         <Route path="/recipe/:id" element={<RecipePage onEdit={editRecipe} />} />
         <Route path="/recipe/:id/cook" element={<CookPage onEdit={editRecipe} />} />
       </Routes>

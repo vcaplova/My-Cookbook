@@ -3,12 +3,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import { scaleIng } from '../lib/utils';
 import { convertIngredient } from '../lib/units';
-import { ChevronLeft, ListIcon, FlameIcon, EditIcon, TrashIcon, PinIcon, StarIcon, UnitIcon, ImageIcon } from '../components/Icons';
+import { ChevronLeft, ListIcon, FlameIcon, EditIcon, TrashIcon, PinIcon, StarIcon, UnitIcon, ImageIcon, ShoppingBagIcon } from '../components/Icons';
 
 export default function RecipePage({ onEdit }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { recipes, colById, toggleStar, togglePin, deleteRecipe, confirm, toast, unitMode, setUnitMode } = useLibrary();
+  const { recipes, colById, toggleStar, togglePin, deleteRecipe, confirm, toast, unitMode, setUnitMode, addToShoppingList, addAllToShoppingList } = useLibrary();
   const recipe = recipes.find((r) => r.id === Number(id));
 
   const [servings, setServings] = useState(recipe?.servings || 4);
@@ -108,15 +108,30 @@ export default function RecipePage({ onEdit }) {
             )}
             <div className="ing-title-row">
               <p className="ing-title">Ingredients</p>
-              <button className={unitMode === 'metric' ? 'btn-unit-toggle metric' : 'btn-unit-toggle'} title="Convert units"
-                onClick={() => setUnitMode((m) => (m === 'original' ? 'metric' : 'original'))}>
-                <span>{unitMode === 'metric' ? 'METRIC' : 'ORIGINAL'}</span> <UnitIcon />
-              </button>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <button className="btn-add-all-shop" title="Add all ingredients to shopping list"
+                  onClick={() => addAllToShoppingList(recipe.id, recipe.title, recipe.ingredients.map((ing) => convertIngredient(scaleIng(ing, ratio), unitMode)))}>
+                  <ShoppingBagIcon size={13} /> Add all
+                </button>
+                <button className={unitMode === 'metric' ? 'btn-unit-toggle metric' : 'btn-unit-toggle'} title="Convert units"
+                  onClick={() => setUnitMode((m) => (m === 'original' ? 'metric' : 'original'))}>
+                  <span>{unitMode === 'metric' ? 'METRIC' : 'ORIGINAL'}</span> <UnitIcon />
+                </button>
+              </div>
             </div>
             <div>
-              {recipe.ingredients.map((ing, i) => (
-                <div key={i} className="ing-item"><span className="ing-dot"></span>{convertIngredient(scaleIng(ing, ratio), unitMode)}</div>
-              ))}
+              {recipe.ingredients.map((ing, i) => {
+                const displayText = convertIngredient(scaleIng(ing, ratio), unitMode);
+                return (
+                  <div key={i} className="ing-item">
+                    <span className="ing-dot"></span>
+                    <span style={{ flex: 1 }}>{displayText}</span>
+                    <button className="ing-add-btn" title="Add to shopping list" onClick={() => addToShoppingList(recipe.id, recipe.title, displayText)}>
+                      <PlusIcon size={11} strokeWidth={2.5} />
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div className="scroll-right">
