@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import { scaleIng } from '../lib/utils';
 import { convertIngredient } from '../lib/units';
-import { ChevronLeft, ListIcon, FlameIcon, EditIcon, TrashIcon, PinIcon, StarIcon, UnitIcon, ImageIcon, ShoppingBagIcon } from '../components/Icons';
+import { ChevronLeft, ListIcon, FlameIcon, EditIcon, TrashIcon, PinIcon, StarIcon, UnitIcon, ImageIcon, ShoppingBagIcon, PlusIcon } from '../components/Icons';
 
 export default function RecipePage({ onEdit }) {
   const { id } = useParams();
