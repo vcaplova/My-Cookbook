@@ -19,7 +19,7 @@ export function TopBar({ onAdd, onSettings }) {
   if (isMobile && searchActive) {
     return (
       <header className="topbar topbar-search-active">
-        <div className="search-wrap search-wrap-expanded">
+        <div className="search-wrap-expanded">
           <SearchIcon className="search-icon" />
           <input
             type="text"
