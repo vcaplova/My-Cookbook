@@ -277,6 +277,7 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 .modal-back.open { display: flex; opacity: 1; pointer-events: all; }
 .modal {
   background: var(--cream); border-radius: var(--r-lg); width: 500px; max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 40px); max-height: calc(100dvh - 40px); overflow-y: auto; scrollbar-width: thin;
   padding: 36px; box-shadow: 0 28px 64px rgba(20,10,4,.3);
   transform: translateY(14px) scale(.98); transition: transform .24s cubic-bezier(.34,1.56,.64,1);
 }
