@@ -1030,7 +1030,7 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 
 
 /* ── UNIT TOGGLE ─────────────────────────────────────── */
-.ing-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1.5px solid var(--linen); }
+.ing-title-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1.5px solid var(--linen); }
 .ing-title-row .ing-title { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
 .btn-unit-toggle {
   display: flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px;
