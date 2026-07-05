@@ -4,7 +4,7 @@ import {
   BrandIcon, SearchIcon, SettingsIcon,
   GridIcon, ListIcon, PlusIcon, BookIcon, ClockIcon, StarIcon, WarnIcon, ShoppingBagIcon,
 } from './Icons';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useIsMobile } from '../lib/useIsMobile';
 
 export function TopBar({ onAdd, onSettings }) {
@@ -12,13 +12,27 @@ export function TopBar({ onAdd, onSettings }) {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [searchActive, setSearchActive] = useState(false);
+  const searchBarRef = useRef(null);
 
   const cancelSearch = () => { setSearch(''); setSearchActive(false); };
   const closeSearch = () => setSearchActive(false);
 
+  useEffect(() => {
+    if (!searchActive) return;
+    const onOutside = (e) => {
+      if (searchBarRef.current && !searchBarRef.current.contains(e.target)) closeSearch();
+    };
+    document.addEventListener('touchstart', onOutside);
+    document.addEventListener('mousedown', onOutside);
+    return () => {
+      document.removeEventListener('touchstart', onOutside);
+      document.removeEventListener('mousedown', onOutside);
+    };
+  }, [searchActive]);
+
   if (isMobile && searchActive) {
     return (
-      <header className="topbar topbar-search-active">
+      <header className="topbar topbar-search-active" ref={searchBarRef}>
         <div className="search-wrap-expanded">
           <SearchIcon className="search-icon" />
           <input
