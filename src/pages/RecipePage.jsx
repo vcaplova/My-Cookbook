@@ -8,7 +8,7 @@ import { ChevronLeft, ListIcon, FlameIcon, EditIcon, TrashIcon, PinIcon, StarIco
 export default function RecipePage({ onEdit }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { recipes, colById, toggleStar, togglePin, deleteRecipe, confirm, toast, unitMode, setUnitMode, shoppingList, addToShoppingList, addAllToShoppingList, removeFromShoppingListByText } = useLibrary();
+  const { recipes, colById, toggleStar, togglePin, deleteRecipe, confirm, toast, unitMode, setUnitMode, shoppingList, addToShoppingList, addAllToShoppingList, removeFromShoppingListByText, removeManyFromShoppingList } = useLibrary();
   const recipe = recipes.find((r) => r.id === Number(id));
 
   const [servings, setServings] = useState(recipe?.servings || 4);
@@ -40,6 +40,8 @@ export default function RecipePage({ onEdit }) {
 
   const base = recipe.servings || 4;
   const ratio = servings / base;
+  const displayIngredients = recipe.ingredients.map((ing) => convertIngredient(scaleIng(ing, ratio), unitMode));
+  const allIngredientsInList = displayIngredients.every((text) => shoppingList.some((item) => item.recipeId === recipe.id && item.text === text));
 
   const doDelete = () => {
     confirm(`Delete "${recipe.title}"? This cannot be undone.`, () => {
@@ -109,9 +111,14 @@ export default function RecipePage({ onEdit }) {
             <div className="ing-title-row">
               <p className="ing-title">Ingredients</p>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <button className="btn-add-all-shop" title="Add all ingredients to shopping list"
-                  onClick={() => addAllToShoppingList(recipe.id, recipe.title, recipe.ingredients.map((ing) => convertIngredient(scaleIng(ing, ratio), unitMode)))}>
-                  <ShoppingBagIcon size={13} /> Add all
+                <button
+                  className={allIngredientsInList ? 'btn-add-all-shop added' : 'btn-add-all-shop'}
+                  title={allIngredientsInList ? 'Remove all ingredients from shopping list' : 'Add all ingredients to shopping list'}
+                  onClick={() => (allIngredientsInList
+                    ? removeManyFromShoppingList(recipe.id, displayIngredients)
+                    : addAllToShoppingList(recipe.id, recipe.title, displayIngredients))}
+                >
+                  <ShoppingBagIcon size={13} /> {allIngredientsInList ? 'Remove all' : 'Add all'}
                 </button>
                 <button className={unitMode === 'metric' ? 'btn-unit-toggle metric' : 'btn-unit-toggle'} title="Convert units"
                   onClick={() => setUnitMode((m) => (m === 'original' ? 'metric' : 'original'))}>
@@ -121,7 +128,7 @@ export default function RecipePage({ onEdit }) {
             </div>
             <div>
               {recipe.ingredients.map((ing, i) => {
-                const displayText = convertIngredient(scaleIng(ing, ratio), unitMode);
+                const displayText = displayIngredients[i];
                 const inList = shoppingList.some((item) => item.recipeId === recipe.id && item.text === displayText);
                 return (
                   <div key={i} className="ing-item">

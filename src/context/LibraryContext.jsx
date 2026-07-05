@@ -200,6 +200,10 @@ export function LibraryProvider({ children }) {
     setShoppingList((list) => list.filter((i) => !(i.recipeId === recipeId && i.text === text)));
   }, []);
 
+  const removeManyFromShoppingList = useCallback((recipeId, texts) => {
+    setShoppingList((list) => list.filter((i) => !(i.recipeId === recipeId && texts.includes(i.text))));
+  }, []);
+
   const addManualShoppingItem = useCallback((text) => {
     const t = text.trim();
     if (!t) return;
@@ -286,7 +290,7 @@ export function LibraryProvider({ children }) {
     addCollection, updateCollection, deleteCollection, colById,
     renameTag, removeTag, clearLibrary, exportJSON,
     shoppingList, addToShoppingList, addAllToShoppingList, toggleShoppingItem,
-    removeShoppingItem, removeFromShoppingListByText, addManualShoppingItem, clearCheckedShoppingItems, clearShoppingList,
+    removeShoppingItem, removeFromShoppingListByText, removeManyFromShoppingList, addManualShoppingItem, clearCheckedShoppingItems, clearShoppingList,
     toastState, toast, confirmState, setConfirmState, confirm,
   };
 
