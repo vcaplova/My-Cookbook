@@ -49,7 +49,7 @@ function normalizeFractions(text) {
   var uni = {'½':'1/2','¼':'1/4','¾':'3/4','⅓':'1/3','⅔':'2/3','⅛':'1/8','⅜':'3/8','⅝':'5/8','⅞':'7/8'};
   for (var k in uni) {
     // "1½" → "1 1/2"
-    text = text.replace(new RegExp('(\d)' + k, 'g'), '$1 ' + uni[k]);
+    text = text.replace(new RegExp('(\\d)' + k, 'g'), '$1 ' + uni[k]);
     // lone "½" → "1/2"
     text = text.split(k).join(uni[k]);
   }
