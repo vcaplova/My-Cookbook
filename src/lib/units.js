@@ -27,6 +27,12 @@ var CUP_WEIGHTS = {
   'tomato paste': 260, 'miso': 270,
   'honey': 340, 'maple syrup': 320, 'agave': 340, 'molasses': 340,
   'butter': 225,
+  'apples': 125, 'apple': 125, 'chopped apples': 125, 'diced apples': 125,
+  'bananas': 150, 'banana': 150, 'mashed banana': 225,
+  'blueberries': 150, 'strawberries': 170, 'raspberries': 125, 'blackberries': 145,
+  'chopped nuts': 120, 'grated carrot': 110, 'carrots': 110,
+  'chopped onion': 160, 'onions': 160, 'diced tomatoes': 180, 'tomatoes': 180,
+  'spinach': 30, 'shredded lettuce': 55, 'peas': 145, 'corn': 165,
 };
 
 var LIQUID_KEYWORDS = [
