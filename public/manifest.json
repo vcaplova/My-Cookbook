@@ -1,0 +1,17 @@
+{
+  "name": "My Cookbook — Recipe Library",
+  "short_name": "My Cookbook",
+  "description": "A personal, local-first recipe library.",
+  "start_url": "/My-Cookbook/",
+  "scope": "/My-Cookbook/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F8F3E7",
+  "theme_color": "#C0694A",
+  "icons": [
+    { "src": "/My-Cookbook/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/My-Cookbook/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/My-Cookbook/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/My-Cookbook/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
