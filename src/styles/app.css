@@ -277,6 +277,8 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 /* ── MODAL ────────────────────────────────────────────── */
 .modal-back {
   position: fixed; inset: 0; background: rgba(20,10,4,.6); backdrop-filter: blur(4px);
+  padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  box-sizing: border-box;
   z-index: 200; display: none; align-items: center; justify-content: center;
   opacity: 0; pointer-events: none; transition: opacity .22s;
 }
@@ -537,7 +539,7 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 .cook-next-ing-label { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--s-dim); margin-bottom: 12px; margin-top: 4px; }
 .cook-next-chips { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,.07); }
 .cook-next-chip { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: var(--r-sm); padding: 8px 14px; font-size: 13px; color: rgba(232,217,192,.65); line-height: 1.4; }
-.cook-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: rgba(0,0,0,.18); border-top: 1px solid rgba(255,255,255,.07); flex-shrink: 0; }
+.cook-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 48px calc(18px + env(safe-area-inset-bottom)); background: rgba(0,0,0,.18); border-top: 1px solid rgba(255,255,255,.07); flex-shrink: 0; }
 .cook-nav-btn { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 24px; border: 1.5px solid rgba(255,255,255,.2); background: transparent; border-radius: 99px; color: var(--s-text); font-family: var(--sans); font-size: 14px; font-weight: 700; cursor: pointer; transition: background .18s, border-color .18s; }
 .cook-nav-btn:hover:not(:disabled) { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.35); }
 .cook-nav-btn:disabled { opacity: .3; cursor: not-allowed; }
@@ -626,7 +628,7 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 
   /* Main fills full width */
   .layout { margin-top: calc(var(--th) + env(safe-area-inset-top)); }
-  .main { padding: 20px 16px 90px; } /* bottom padding for nav */
+  .main { padding: 20px 16px calc(90px + env(safe-area-inset-bottom)); } /* bottom padding for nav */
 
   /* Bottom nav */
   .bottom-nav {
@@ -687,7 +689,7 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
   }
   .scroll-right {
     overflow-y: visible; /* let parent scroll */
-    padding: 16px 18px 100px;
+    padding: 16px 18px calc(100px + env(safe-area-inset-bottom));
   }
 
   /* Cook mode: single column scrollable */
@@ -701,7 +703,7 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 
   /* Detail bar: smaller on mobile */
   .detail-bar { padding: env(safe-area-inset-top) 14px 0; gap: 8px; }
-  .detail-bar-title { font-size: 14px; }
+  .detail-bar-title { display: none; }
   .mbtn { padding: 0 10px; font-size: 11.5px; }
 
   /* Cards */
