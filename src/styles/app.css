@@ -636,7 +636,7 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 99;
     background: var(--espresso);
     border-top: 1px solid rgba(255,255,255,.08);
-    height: calc(64px + env(safe-area-inset-bottom));
+    height: calc(54px + env(safe-area-inset-bottom));
     box-sizing: border-box;
   }
   .bnav-item {
