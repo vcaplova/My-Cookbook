@@ -628,7 +628,7 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 
   /* Main fills full width */
   .layout { margin-top: calc(var(--th) + env(safe-area-inset-top)); }
-  .main { padding: 20px 16px calc(90px + env(safe-area-inset-bottom)); } /* bottom padding for nav */
+  .main { padding: 20px 16px calc(74px + env(safe-area-inset-bottom)); } /* bottom padding for nav */
 
   /* Bottom nav */
   .bottom-nav {
