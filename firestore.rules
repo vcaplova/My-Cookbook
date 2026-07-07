@@ -1,0 +1,11 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Each signed-in user can only read/write documents under their own
+    // users/{their-uid}/... path. No one can read or write another user's
+    // recipes, even if they know the UID.
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

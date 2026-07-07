@@ -1,18 +1,23 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { SEED_COLLECTIONS, SEED_RECIPES } from '../lib/seed';
 import { storage } from '../lib/storage';
+import { FirestoreStorageAdapter } from '../lib/firestoreStorage';
+import { useAuth } from './AuthContext';
 import { parseMinutes } from '../lib/utils';
 import { PALETTES, DEFAULT_PALETTE, applyPalette } from '../lib/palettes';
 
 const LibraryContext = createContext(null);
 
 export function LibraryProvider({ children }) {
+  const { user, authLoaded } = useAuth();
   const [recipes, setRecipes] = useState([]);
   const [collections, setCollections] = useState([]);
   const [globalTags, setGlobalTags] = useState([]);
   const [nextId, setNextId] = useState(1);
   const [shoppingList, setShoppingList] = useState([]);
   const [loaded, setLoaded] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const activeStorageRef = useRef(storage);
 
   // View/filter state
   const [view, setView] = useState('grid');
@@ -31,20 +36,52 @@ export function LibraryProvider({ children }) {
   const toastTimer = useRef(null);
   const [confirmState, setConfirmState] = useState(null);
 
-  // Load once
+  const toast = useCallback((msg, ok = false) => {
+    clearTimeout(toastTimer.current);
+    setToastState({ msg, ok });
+    toastTimer.current = setTimeout(() => setToastState(null), 2600);
+  }, []);
+
+  // Load whenever auth state resolves or changes — guest (localStorage) or
+  // signed-in (Firestore, migrating any existing local data on first login).
   useEffect(() => {
+    if (!authLoaded) return;
+    let cancelled = false;
     (async () => {
-      const data = await storage.loadLibrary();
+      setLoaded(false);
+      let data;
+      if (user) {
+        setSyncing(true);
+        const cloudAdapter = new FirestoreStorageAdapter(user.uid);
+        activeStorageRef.current = cloudAdapter;
+        data = await cloudAdapter.loadLibrary();
+        if (!data) {
+          // First time this account has signed in — bring over whatever's
+          // currently sitting in this browser's local (guest) storage.
+          const localData = await storage.loadLibrary();
+          if (localData) {
+            await cloudAdapter.saveLibrary(localData);
+            data = localData;
+          }
+        }
+        setSyncing(false);
+      } else {
+        activeStorageRef.current = storage;
+        data = await storage.loadLibrary();
+      }
+      if (cancelled) return;
       if (data) {
         setRecipes(Array.isArray(data.recipes) && data.recipes.length ? data.recipes : SEED_RECIPES);
         setCollections(Array.isArray(data.collections) && data.collections.length ? data.collections : SEED_COLLECTIONS);
         setGlobalTags(Array.isArray(data.globalTags) ? data.globalTags : []);
         setNextId(typeof data.nextId === 'number' ? data.nextId : 100);
         setShoppingList(Array.isArray(data.shoppingList) ? data.shoppingList : []);
-        if (data.view === 'list') setView('list');
+        setView(data.view === 'list' ? 'list' : 'grid');
       } else {
         setRecipes(SEED_RECIPES);
         setCollections(SEED_COLLECTIONS);
+        setGlobalTags([]);
+        setShoppingList([]);
         setNextId(7);
       }
       const savedPalette = storage.getPalette();
@@ -53,19 +90,14 @@ export function LibraryProvider({ children }) {
       applyPalette(key);
       setLoaded(true);
     })();
-  }, []);
-
-  const toast = useCallback((msg, ok = false) => {
-    clearTimeout(toastTimer.current);
-    setToastState({ msg, ok });
-    toastTimer.current = setTimeout(() => setToastState(null), 2600);
-  }, []);
+    return () => { cancelled = true; };
+  }, [user, authLoaded]);
 
   // Persist on change
   useEffect(() => {
     if (!loaded) return;
     (async () => {
-      const ok = await storage.saveLibrary({ recipes, collections, nextId, view, globalTags, shoppingList });
+      const ok = await activeStorageRef.current.saveLibrary({ recipes, collections, nextId, view, globalTags, shoppingList });
       if (!ok) {
         toast("Storage is full — this change wasn't saved. Try removing a photo or two.");
       }
@@ -220,7 +252,7 @@ export function LibraryProvider({ children }) {
 
   // ── Library-level actions ──────────────────────
   const clearLibrary = useCallback(() => {
-    storage.clearLibrary();
+    activeStorageRef.current.clearLibrary();
     setRecipes([]);
     setCollections(SEED_COLLECTIONS);
     setGlobalTags([]);
@@ -282,7 +314,7 @@ export function LibraryProvider({ children }) {
   const colById = useCallback((id) => collections.find((c) => c.id === id), [collections]);
 
   const value = {
-    loaded, recipes, collections, filtered, allTags,
+    loaded, syncing, recipes, collections, filtered, allTags,
     view, setView, filter, setFilter, activeTags, setActiveTags,
     search, setSearch, maxTime, setMaxTime, servingsBand, setServingsBand,
     palette, setPalette, unitMode, setUnitMode,

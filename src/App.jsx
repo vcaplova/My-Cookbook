@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import { LibraryProvider, useLibrary } from './context/LibraryContext';
 import { TopBar, Sidebar, Toast, ConfirmDialog, BottomNav } from './components/Chrome';
 import LibraryPage from './pages/LibraryPage';
@@ -67,9 +68,11 @@ function AppShell() {
 export default function App() {
   return (
     <HashRouter>
-      <LibraryProvider>
-        <AppShell />
-      </LibraryProvider>
+      <AuthProvider>
+        <LibraryProvider>
+          <AppShell />
+        </LibraryProvider>
+      </AuthProvider>
     </HashRouter>
   );
 }
