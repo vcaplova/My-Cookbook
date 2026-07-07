@@ -285,7 +285,7 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 .modal-back.open { display: flex; opacity: 1; pointer-events: all; }
 .modal {
   background: var(--cream); border-radius: var(--r-lg); width: 500px; max-width: calc(100vw - 40px);
-  max-height: calc(100vh - 40px); max-height: calc(100dvh - 40px); overflow-y: auto; scrollbar-width: thin;
+  max-height: 100%; overflow-y: auto; scrollbar-width: thin;
   padding: 36px; box-shadow: 0 28px 64px rgba(20,10,4,.3);
   transform: translateY(14px) scale(.98); transition: transform .24s cubic-bezier(.34,1.56,.64,1);
 }
@@ -365,7 +365,7 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 .load-txt strong { display: block; font-family: var(--sans); font-size: 12px; font-weight: 400; margin-bottom: 6px; color: var(--muted); max-width: 380px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; word-break: break-all; }
 
 /* Review modal */
-.review-modal { width: 720px; max-width: calc(100vw - 40px); max-height: calc(100vh - 80px); max-height: calc(100dvh - 80px); overflow-y: auto; scrollbar-width: thin; }
+.review-modal { width: 720px; max-width: calc(100vw - 40px); max-height: 100%; overflow-y: auto; scrollbar-width: thin; }
 .review-modal::-webkit-scrollbar { width: 5px; }
 .review-modal::-webkit-scrollbar-thumb { background: var(--linen); }
 .review-hero { width: 100%; height: 200px; border-radius: var(--r-md); overflow: hidden; background: var(--linen); margin-bottom: 24px; position: relative; }
