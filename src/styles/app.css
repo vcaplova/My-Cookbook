@@ -34,7 +34,8 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 
 /* ── TOP BAR ──────────────────────────────────────────── */
 .topbar {
-  position: fixed; top: 0; left: 0; right: 0; height: var(--th);
+  position: fixed; top: 0; left: 0; right: 0; height: calc(var(--th) + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top); box-sizing: border-box;
   background: var(--cream); border-bottom: 1.5px solid var(--linen);
   display: flex; align-items: center; z-index: 100;
 }
@@ -74,7 +75,12 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 .btn-add:active { transform: none; }
 
 /* ── LAYOUT ───────────────────────────────────────────── */
-.layout { display: flex; margin-top: var(--th); height: calc(100vh - var(--th)); height: calc(100dvh - var(--th)); overflow: hidden; }
+.layout {
+  display: flex; margin-top: calc(var(--th) + env(safe-area-inset-top));
+  height: calc(100vh - var(--th) - env(safe-area-inset-top));
+  height: calc(100dvh - var(--th) - env(safe-area-inset-top));
+  overflow: hidden;
+}
 
 /* ── SIDEBAR ──────────────────────────────────────────── */
 .sidebar {
@@ -605,7 +611,7 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
   .sidebar { display: none; }
 
   /* Main fills full width */
-  .layout { margin-top: var(--th); }
+  .layout { margin-top: calc(var(--th) + env(safe-area-inset-top)); }
   .main { padding: 20px 16px 90px; } /* bottom padding for nav */
 
   /* Bottom nav */
