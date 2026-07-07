@@ -10,6 +10,15 @@ export default function ShoppingListPage() {
   } = useLibrary();
   const navigate = useNavigate();
   const [manualInput, setManualInput] = useState('');
+  const [removingIds, setRemovingIds] = useState(() => new Set());
+
+  const startRemove = (id) => {
+    setRemovingIds((prev) => new Set(prev).add(id));
+    setTimeout(() => {
+      removeShoppingItem(id);
+      setRemovingIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
+    }, 220);
+  };
 
   const groups = useMemo(() => {
     const byRecipe = new Map();
@@ -87,13 +96,17 @@ export default function ShoppingListPage() {
               </div>
               <div>
                 {group.items.map((item) => (
-                  <div key={item.id} className={item.checked ? 'shop-item checked' : 'shop-item'}>
+                  <div key={item.id} className={[
+                    'shop-item',
+                    item.checked ? 'checked' : '',
+                    removingIds.has(item.id) ? 'removing' : '',
+                  ].filter(Boolean).join(' ')}>
                     <label className="shop-item-check">
                       <input type="checkbox" checked={item.checked} onChange={() => toggleShoppingItem(item.id)} />
                       <span className="shop-item-box"></span>
                       <span className="shop-item-text">{item.text}</span>
                     </label>
-                    <button className="shop-item-remove" onClick={() => removeShoppingItem(item.id)}><XIcon size={11} /></button>
+                    <button className="shop-item-remove" onClick={() => startRemove(item.id)}><XIcon size={11} /></button>
                   </div>
                 ))}
               </div>
