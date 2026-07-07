@@ -558,6 +558,20 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 .btn-icon { width: 34px; height: 34px; border: none; background: var(--linen); border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); transition: background .15s, color .15s; flex-shrink: 0; }
 .btn-icon:hover { background: var(--cream); color: var(--walnut); }
 .btn-icon-del:hover { background: #fdf0ef !important; color: #c0392b !important; }
+.detail-more-wrap { position: relative; }
+.detail-more-menu {
+  position: absolute; top: calc(100% + 8px); right: 0; z-index: 250;
+  background: var(--cream); border: 1.5px solid var(--linen); border-radius: var(--r-md);
+  box-shadow: 0 12px 32px rgba(20,10,4,.2); min-width: 170px; overflow: hidden;
+}
+.detail-more-menu button {
+  display: flex; align-items: center; gap: 10px; width: 100%; padding: 13px 16px;
+  background: none; border: none; text-align: left; cursor: pointer;
+  font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--ink);
+}
+.detail-more-menu button:hover { background: var(--linen); }
+.detail-more-menu button.danger { color: #c0392b; }
+.detail-more-menu button.danger:hover { background: #fdf0ef; }
 
 /* ── MOBILE RESPONSIVE ─────────────────────────────────── */
 @media (max-width: 768px) {

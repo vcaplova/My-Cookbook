@@ -3,7 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import { scaleIng, getStepIngs, extractTimerFromStep, formatTimerTime } from '../lib/utils';
 import { convertIngredient } from '../lib/units';
-import { ChevronLeft, ChevronRight, ListIcon, FlameIcon, EditIcon, TrashIcon, PinIcon, StarIcon } from '../components/Icons';
+import { ChevronLeft, ChevronRight, ListIcon, FlameIcon, PinIcon, StarIcon } from '../components/Icons';
+import DetailBarActions from '../components/DetailBarActions';
 
 const CIRCUMFERENCE = 2 * Math.PI * 32;
 
@@ -135,8 +136,7 @@ export default function CookPage({ onEdit }) {
             <button className="mbtn" onClick={() => navigate(`/recipe/${recipe.id}`)}><ListIcon size={13} /> Read</button>
             <button className="mbtn on"><FlameIcon /> Cook</button>
           </div>
-          <button className="btn-icon" title="Edit recipe" onClick={() => onEdit(recipe)}><EditIcon /></button>
-          <button className="btn-icon btn-icon-del" title="Delete recipe" onClick={doDelete}><TrashIcon size={14} /></button>
+          <DetailBarActions onEdit={() => onEdit(recipe)} onDelete={doDelete} />
           <button className={recipe.pinned ? 'detail-pin on' : 'detail-pin'} title={recipe.pinned ? 'Unpin recipe' : 'Pin recipe'}
             onClick={() => { togglePin(recipe.id); toast(recipe.pinned ? `"${recipe.title}" unpinned` : `"${recipe.title}" pinned`); }}>
             <PinIcon size={14} />

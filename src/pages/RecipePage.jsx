@@ -3,7 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import { scaleIng } from '../lib/utils';
 import { convertIngredient } from '../lib/units';
-import { ChevronLeft, ListIcon, FlameIcon, EditIcon, TrashIcon, PinIcon, StarIcon, UnitIcon, ImageIcon, ShoppingBagIcon, PlusIcon, MinusIcon } from '../components/Icons';
+import { ChevronLeft, ListIcon, FlameIcon, PinIcon, StarIcon, UnitIcon, ImageIcon, ShoppingBagIcon, PlusIcon, MinusIcon } from '../components/Icons';
+import DetailBarActions from '../components/DetailBarActions';
 
 export default function RecipePage({ onEdit }) {
   const { id } = useParams();
@@ -62,8 +63,7 @@ export default function RecipePage({ onEdit }) {
             <button className="mbtn on"><ListIcon size={13} /> Read</button>
             <button className="mbtn" onClick={() => navigate(`/recipe/${recipe.id}/cook`)}><FlameIcon /> Cook</button>
           </div>
-          <button className="btn-icon" title="Edit recipe" onClick={() => onEdit(recipe)}><EditIcon /></button>
-          <button className="btn-icon btn-icon-del" title="Delete recipe" onClick={doDelete}><TrashIcon size={14} /></button>
+          <DetailBarActions onEdit={() => onEdit(recipe)} onDelete={doDelete} />
           <button className={recipe.pinned ? 'detail-pin pinned' : 'detail-pin'} title={recipe.pinned ? 'Unpin recipe' : 'Pin recipe'}
             onClick={() => { togglePin(recipe.id); toast(recipe.pinned ? `"${recipe.title}" unpinned` : `"${recipe.title}" pinned`); }}>
             <PinIcon size={14} />
