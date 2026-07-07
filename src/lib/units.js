@@ -126,6 +126,11 @@ function convertToMetric(text) {
 export function convertIngredient(text, unitMode) {
   if (unitMode !== 'metric') return text;
   if (/tbsp|tsp|tablespoon|teaspoon/i.test(text)) return text;
+  // If the line already starts with a metric measurement (e.g. "280g (2 cups)
+  // flour"), the gram/ml value is already accurate and authoritative — don't
+  // recompute a second, generic estimate for the parenthetical that could
+  // disagree with it (e.g. the recipe's own 280g vs a recalculated 240g).
+  if (/^\s*\d+(?:\.\d+)?\s*(g|kg|ml|l)\b/i.test(text)) return text;
   return convertToMetric(text);
 }
 export { convertToMetric };
