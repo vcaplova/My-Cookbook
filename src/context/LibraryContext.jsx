@@ -25,6 +25,7 @@ export function LibraryProvider({ children }) {
   const [filter, setFilter] = useState('all'); // 'all' | 'recent' | 'favourites' | 'col:<id>'
   const [activeTags, setActiveTags] = useState([]);
   const [search, setSearch] = useState('');
+  const [searchActive, setSearchActive] = useState(false);
   const [maxTime, setMaxTime] = useState(0);
   const [servingsBand, setServingsBand] = useState('');
 
@@ -316,7 +317,7 @@ export function LibraryProvider({ children }) {
   const value = {
     loaded, syncing, recipes, collections, filtered, allTags,
     view, setView, filter, setFilter, activeTags, setActiveTags,
-    search, setSearch, maxTime, setMaxTime, servingsBand, setServingsBand,
+    search, setSearch, searchActive, setSearchActive, maxTime, setMaxTime, servingsBand, setServingsBand,
     palette, setPalette, unitMode, setUnitMode,
     addRecipe, updateRecipe, deleteRecipe, toggleStar, togglePin,
     addCollection, updateCollection, deleteCollection, colById,
