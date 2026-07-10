@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import {
   BrandIcon, SearchIcon, SettingsIcon,
-  GridIcon, ListIcon, PlusIcon, BookIcon, ClockIcon, StarIcon, WarnIcon, ShoppingBagIcon,
+  GridIcon, ListIcon, PlusIcon, BookIcon, ClockIcon, StarIcon, WarnIcon, ShoppingBagIcon, EditIcon,
 } from './Icons';
 import { useEffect, useRef, useState } from 'react';
 import { useIsMobile } from '../lib/useIsMobile';
@@ -88,7 +88,7 @@ export function TopBar({ onAdd, onSettings }) {
   );
 }
 
-export function Sidebar({ onNewCollection }) {
+export function Sidebar({ onNewCollection, onEditCollection }) {
   const { recipes, collections, filter, setFilter, shoppingList } = useLibrary();
   const navigate = useNavigate();
   const location = useLocation();
@@ -137,6 +137,13 @@ export function Sidebar({ onNewCollection }) {
                 <span className="nav-icon" style={{ fontSize: 15 }}>{c.emoji || '🍽'}</span>
                 <span className="nav-text">{c.name}</span>
                 <span className="nav-count">{count}</span>
+                <button
+                  className="nav-item-edit"
+                  title="Edit collection"
+                  onClick={(e) => { e.stopPropagation(); onEditCollection(c.id); }}
+                >
+                  <EditIcon size={12} strokeWidth={2.2} />
+                </button>
               </div>
             );
           })}
@@ -175,7 +182,7 @@ export function ConfirmDialog() {
   );
 }
 
-export function BottomNav({ onNewCollection }) {
+export function BottomNav({ onNewCollection, onEditCollection }) {
   const { filter, setFilter, collections, shoppingList } = useLibrary();
   const [sheetOpen, setSheetOpen] = useState(false);
   const navigate = useNavigate();
@@ -203,6 +210,13 @@ export function BottomNav({ onNewCollection }) {
             <div key={c.id} className={filter === 'col:' + c.id ? 'nav-item active' : 'nav-item'} onClick={() => go('col:' + c.id)}>
               <span className="nav-icon" style={{ fontSize: 15 }}>{c.emoji || '🍽'}</span>
               <span className="nav-text">{c.name}</span>
+              <button
+                className="nav-item-edit"
+                title="Edit collection"
+                onClick={(e) => { e.stopPropagation(); setSheetOpen(false); onEditCollection(c.id); }}
+              >
+                <EditIcon size={12} strokeWidth={2.2} />
+              </button>
             </div>
           ))}
         </div>

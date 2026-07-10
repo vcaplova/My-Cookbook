@@ -29,12 +29,13 @@ function AppShell() {
 
   const openAdd = () => setImportOpen(true);
   const editRecipe = (r) => openDraft(r, r.id);
+  const editCollection = (id) => setColModal({ open: true, editId: id });
 
   return (
     <>
       <TopBar onAdd={openAdd} onSettings={() => setSettingsOpen(true)} />
       <div className="layout">
-        <Sidebar onNewCollection={() => setColModal({ open: true, editId: null })} />
+        <Sidebar onNewCollection={() => setColModal({ open: true, editId: null })} onEditCollection={editCollection} />
         <Routes>
           <Route path="/" element={<LibraryPage onAdd={openAdd} />} />
           <Route path="/shopping-list" element={<ShoppingListPage />} />
@@ -47,7 +48,7 @@ function AppShell() {
         <Route path="/recipe/:id/cook" element={<CookPage onEdit={editRecipe} />} />
       </Routes>
 
-      <BottomNav onNewCollection={() => setColModal({ open: true, editId: null })} />
+      <BottomNav onNewCollection={() => setColModal({ open: true, editId: null })} onEditCollection={editCollection} />
 
       <ImportModal open={importOpen} onClose={() => setImportOpen(false)} onDraft={openDraft} />
       <ReviewModal

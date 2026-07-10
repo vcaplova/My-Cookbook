@@ -107,6 +107,13 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 .nav-text { font-size: 13.5px; color: var(--s-text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .nav-item.active .nav-text { font-weight: 700; color: #fff; }
 .nav-count { font-size: 11px; color: var(--s-dim); font-weight: 300; flex-shrink: 0; }
+.nav-item-edit {
+  width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; border: none;
+  background: rgba(255,255,255,.06); color: var(--s-dim); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, color .15s;
+}
+.nav-item-edit:hover { background: rgba(255,255,255,.14); color: var(--s-text); }
 .nav-item.active .nav-count { color: var(--terra-lt); }
 .col-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 
