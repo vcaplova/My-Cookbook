@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import { PinIcon, EditIcon, ImageIcon, StarIcon } from '../components/Icons';
@@ -53,6 +53,23 @@ export default function LibraryPage({ onAdd }) {
   const servPills = [['', 'Any'], ['1', '1–2'], ['4', '3–4'], ['6', '5–6'], ['8', '7+']];
 
   const open = (id) => navigate('/recipe/' + id);
+  const touchStartPos = useRef({ x: 0, y: 0 });
+  const handleTitleTouchStart = (e) => {
+    const t = e.touches[0];
+    touchStartPos.current = { x: t.clientX, y: t.clientY };
+  };
+  const handleTitleTouchEnd = (e, id) => {
+    const t = e.changedTouches[0];
+    const dx = Math.abs(t.clientX - touchStartPos.current.x);
+    const dy = Math.abs(t.clientY - touchStartPos.current.y);
+    // Only treat this as a tap (not a scroll passing over the title) if the
+    // finger barely moved between touchstart and touchend.
+    if (dx < 10 && dy < 10) {
+      e.preventDefault();
+      e.stopPropagation();
+      open(id);
+    }
+  };
   const doPin = (e, r) => {
     e.stopPropagation();
     togglePin(r.id);
@@ -152,7 +169,8 @@ export default function LibraryPage({ onAdd }) {
                 <div
                   className="card-title"
                   onClick={(e) => { e.stopPropagation(); open(r.id); }}
-                  onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); open(r.id); }}
+                  onTouchStart={handleTitleTouchStart}
+                  onTouchEnd={(e) => handleTitleTouchEnd(e, r.id)}
                 >{r.title}</div>
                 <div className="card-meta">
                   <span className="card-meta-i"><ClockSm />{r.cookTime || '—'}</span>
@@ -183,7 +201,8 @@ export default function LibraryPage({ onAdd }) {
                 <div
                   className="list-title"
                   onClick={(e) => { e.stopPropagation(); open(r.id); }}
-                  onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); open(r.id); }}
+                  onTouchStart={handleTitleTouchStart}
+                  onTouchEnd={(e) => handleTitleTouchEnd(e, r.id)}
                 >{r.title}</div>
                 <div className="list-meta">
                   <span className="list-meta-i"><ClockSm />{r.cookTime || '—'}</span>
