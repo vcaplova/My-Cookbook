@@ -30,7 +30,7 @@ const PeopleSm = () => (
 
 export default function LibraryPage({ onAdd }) {
   const {
-    filtered, recipes, colById, view, filter, search,
+    filtered, recipes, colById, view, filter, search, searchActive,
     maxTime, setMaxTime, servingsBand, setServingsBand,
     activeTags, setActiveTags, allTags, toggleStar, togglePin, toast,
     removeTag,
@@ -134,7 +134,7 @@ export default function LibraryPage({ onAdd }) {
         </div>
       </div>
 
-      {allTags.length > 0 && (search || activeTags.length > 0) && (
+      {allTags.length > 0 && (searchActive || search || activeTags.length > 0) && (
         <div className="tag-bar-wrap">
           <div className={tagEdit ? 'tag-bar edit-mode' : 'tag-bar'}>
             {allTags.map((t) => (
