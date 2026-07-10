@@ -160,37 +160,28 @@ export default function ReviewModal({ open, draft, editingId, isManual, onClose,
               {c.emoji || '🍽'} {c.name}
             </label>
           ))}
-          <label
-            className={`col-check col-check-add${showNewCol ? ' expanding' : ''}`}
-            onClick={(e) => { e.preventDefault(); setShowNewCol(true); setTimeout(() => document.getElementById('new-col-input')?.focus(), 0); }}
-          >
-            {showNewCol ? (
-              <input
-                id="new-col-input"
-                value={newColInput}
-                onChange={(e) => setNewColInput(e.target.value)}
-                onClick={(e) => e.preventDefault()}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    const name = newColInput.trim();
-                    if (name) { addCollection(name, null, '🍽'); set('collections', [...form.collections, name]); }
-                    setNewColInput(''); setShowNewCol(false);
-                  }
-                  if (e.key === 'Escape') { setNewColInput(''); setShowNewCol(false); }
-                }}
-                onBlur={() => {
+          <div className="col-add-wrap">
+            <input
+              value={newColInput}
+              onChange={(e) => setNewColInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
                   const name = newColInput.trim();
                   if (name) { addCollection(name, null, '🍽'); set('collections', [...form.collections, name]); }
-                  setNewColInput(''); setShowNewCol(false);
-                }}
-                placeholder="Name…"
-                style={{ border: 'none', background: 'none', outline: 'none', fontFamily: 'var(--sans)', fontSize: 12, fontWeight: 700, color: 'var(--walnut)', width: 110, padding: 0 }}
-              />
-            ) : (
-              <>+ Add</>
-            )}
-          </label>
+                  setNewColInput('');
+                }
+                if (e.key === 'Escape') setNewColInput('');
+              }}
+              onBlur={() => {
+                const name = newColInput.trim();
+                if (name) { addCollection(name, null, '🍽'); set('collections', [...form.collections, name]); }
+                setNewColInput('');
+              }}
+              placeholder="+ New collection…"
+              className="col-add-input"
+            />
+          </div>
         </div>
 
         <p className="sec-title" style={{ marginTop: 20 }}>Personal Notes</p>
