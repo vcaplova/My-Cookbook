@@ -65,10 +65,15 @@ export default function RecipePage({ onEdit }) {
           </div>
           <DetailBarActions onEdit={() => onEdit(recipe)} onDelete={doDelete} />
           <button className={recipe.pinned ? 'detail-pin pinned' : 'detail-pin'} title={recipe.pinned ? 'Unpin recipe' : 'Pin recipe'}
-            onClick={() => { togglePin(recipe.id); toast(recipe.pinned ? `"${recipe.title}" unpinned` : `"${recipe.title}" pinned`); }}>
+            onClick={() => { togglePin(recipe.id); toast(recipe.pinned ? `"${recipe.title}" unpinned` : `"${recipe.title}" pinned`); }}
+            onTouchEnd={(e) => { e.preventDefault(); togglePin(recipe.id); toast(recipe.pinned ? `"${recipe.title}" unpinned` : `"${recipe.title}" pinned`); }}>
             <PinIcon size={14} />
           </button>
-          <button className={recipe.starred ? 'detail-fav on' : 'detail-fav'} onClick={() => toggleStar(recipe.id)}>
+          <button
+            className={recipe.starred ? 'detail-fav on' : 'detail-fav'}
+            onClick={() => toggleStar(recipe.id)}
+            onTouchEnd={(e) => { e.preventDefault(); toggleStar(recipe.id); }}
+          >
             <StarIcon size={16} fill={recipe.starred ? '#D4A843' : 'none'} stroke={recipe.starred ? '#D4A843' : '#9C856A'} />
           </button>
         </div>
