@@ -37,6 +37,7 @@ export default function LibraryPage({ onAdd }) {
   } = useLibrary();
   const navigate = useNavigate();
   const [tagEdit, setTagEdit] = useState(false);
+  const [activeCard, setActiveCard] = useState(null);
 
   const title =
     filter === 'recent' ? 'Recently Added' :
@@ -152,9 +153,17 @@ export default function LibraryPage({ onAdd }) {
           )}
         </div>
       ) : view === 'grid' ? (
-        <div className="recipe-grid">
+        <div className="recipe-grid" onClick={() => setActiveCard(null)}>
           {filtered.map((r) => (
-            <div key={r.id} className="recipe-card">
+            <div
+              key={r.id}
+              className={`recipe-card${activeCard === r.id ? ' touch-active' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (activeCard !== r.id) setActiveCard(r.id);
+                else setActiveCard(null);
+              }}
+            >
               <div className="card-img">
                 <RecipeImg recipe={r} phClass="card-img-ph" />
                 {r.pinned && <div className="pin-corner"><div className="pin-corner-label"><PinSolid /></div></div>}
@@ -168,9 +177,9 @@ export default function LibraryPage({ onAdd }) {
               <div className="card-body">
                 <div
                   className="card-title"
-                  onClick={(e) => { e.stopPropagation(); open(r.id); }}
                   onTouchStart={handleTitleTouchStart}
                   onTouchEnd={(e) => handleTitleTouchEnd(e, r.id)}
+                  onClick={(e) => { e.stopPropagation(); open(r.id); }}
                 >{r.title}</div>
                 <div className="card-meta">
                   <span className="card-meta-i"><ClockSm />{r.cookTime || '—'}</span>
