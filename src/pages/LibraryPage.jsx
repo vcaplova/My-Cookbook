@@ -149,7 +149,11 @@ export default function LibraryPage({ onAdd }) {
                 </button>
               </div>
               <div className="card-body">
-                <div className="card-title" onClick={(e) => { e.stopPropagation(); open(r.id); }}>{r.title}</div>
+                <div
+                  className="card-title"
+                  onClick={(e) => { e.stopPropagation(); open(r.id); }}
+                  onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); open(r.id); }}
+                >{r.title}</div>
                 <div className="card-meta">
                   <span className="card-meta-i"><ClockSm />{r.cookTime || '—'}</span>
                   <span className="card-meta-i"><PeopleSm />{r.servings}</span>
@@ -176,7 +180,11 @@ export default function LibraryPage({ onAdd }) {
                 <RecipeImg recipe={r} phClass="list-img-ph" />
               </div>
               <div className="list-body">
-                <div className="list-title" onClick={(e) => { e.stopPropagation(); open(r.id); }}>{r.title}</div>
+                <div
+                  className="list-title"
+                  onClick={(e) => { e.stopPropagation(); open(r.id); }}
+                  onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); open(r.id); }}
+                >{r.title}</div>
                 <div className="list-meta">
                   <span className="list-meta-i"><ClockSm />{r.cookTime || '—'}</span>
                   <span className="list-meta-i"><PeopleSm />{r.servings}</span>
