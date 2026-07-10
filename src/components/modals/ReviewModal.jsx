@@ -8,6 +8,7 @@ export default function ReviewModal({ open, draft, editingId, isManual, onClose,
   const [form, setForm] = useState(null);
   const [tagInput, setTagInput] = useState('');
   const [newColInput, setNewColInput] = useState('');
+  const [showNewCol, setShowNewCol] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef(null);
 
@@ -25,6 +26,8 @@ export default function ReviewModal({ open, draft, editingId, isManual, onClose,
         notes: draft.notes || '',
       });
       setTagInput('');
+      setNewColInput('');
+      setShowNewCol(false);
     }
   }, [open, draft]);
 
@@ -157,34 +160,37 @@ export default function ReviewModal({ open, draft, editingId, isManual, onClose,
               {c.emoji || '🍽'} {c.name}
             </label>
           ))}
-        </div>
-        <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-          <input
-            value={newColInput}
-            onChange={(e) => setNewColInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                const name = newColInput.trim();
-                if (!name) return;
-                addCollection(name, null, '🍽');
-                set('collections', [...form.collections, name]);
-                setNewColInput('');
-              }
-            }}
-            placeholder="New collection…"
-            style={{ flex: 1, height: 36, background: 'var(--parchment)', border: '1.5px solid var(--linen)', borderRadius: 'var(--r-sm)', padding: '0 12px', fontFamily: 'var(--sans)', fontSize: 13, color: 'var(--ink)', outline: 'none' }}
-          />
-          <button
-            onClick={() => {
-              const name = newColInput.trim();
-              if (!name) return;
-              addCollection(name, null, '🍽');
-              set('collections', [...form.collections, name]);
-              setNewColInput('');
-            }}
-            style={{ height: 36, padding: '0 14px', background: 'var(--terra)', color: '#fff', border: 'none', borderRadius: 'var(--r-sm)', fontFamily: 'var(--sans)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
-          >Add</button>
+          <label
+            className={`col-check col-check-add${showNewCol ? ' expanding' : ''}`}
+            onClick={(e) => { e.preventDefault(); setShowNewCol(true); setTimeout(() => document.getElementById('new-col-input')?.focus(), 0); }}
+          >
+            {showNewCol ? (
+              <input
+                id="new-col-input"
+                value={newColInput}
+                onChange={(e) => setNewColInput(e.target.value)}
+                onClick={(e) => e.preventDefault()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const name = newColInput.trim();
+                    if (name) { addCollection(name, null, '🍽'); set('collections', [...form.collections, name]); }
+                    setNewColInput(''); setShowNewCol(false);
+                  }
+                  if (e.key === 'Escape') { setNewColInput(''); setShowNewCol(false); }
+                }}
+                onBlur={() => {
+                  const name = newColInput.trim();
+                  if (name) { addCollection(name, null, '🍽'); set('collections', [...form.collections, name]); }
+                  setNewColInput(''); setShowNewCol(false);
+                }}
+                placeholder="Name…"
+                style={{ border: 'none', background: 'none', outline: 'none', fontFamily: 'var(--sans)', fontSize: 12, fontWeight: 700, color: 'var(--walnut)', width: 110, padding: 0 }}
+              />
+            ) : (
+              <>+ Add</>
+            )}
+          </label>
         </div>
 
         <p className="sec-title" style={{ marginTop: 20 }}>Personal Notes</p>
