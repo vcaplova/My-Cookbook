@@ -401,8 +401,8 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 }
 .col-check.on { background: var(--espresso); color: #fff; border-color: var(--espresso); }
 .col-check input { display: none; }
-.col-check-add { border-style: dashed; color: var(--muted); font-weight: 600; cursor: pointer; transition: border-color .15s, color .15s, width .2s; }
-.col-check-add.expanding { border-style: solid; border-color: var(--terra); color: var(--walnut); }
+.col-check-add { border-style: dashed; color: var(--muted); font-weight: 600; cursor: pointer; transition: border-color .15s, color .15s, width .2s; padding: 6px 20px; }
+.col-check-add.expanding { border-style: solid; border-color: var(--terra); color: var(--walnut); padding: 6px 16px; }
 .review-footer { display: flex; gap: 12px; margin-top: 28px; padding-top: 20px; border-top: 1.5px solid var(--linen); }
 .btn-save { flex: 1; height: 48px; background: var(--terra); color: #fff; border: none; border-radius: var(--r-md); font-family: var(--sans); font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: var(--btn-shadow); transition: background .18s; }
 .btn-back { height: 48px; padding: 0 24px; background: transparent; color: var(--walnut); border: 1.5px solid var(--linen); border-radius: var(--r-md); font-family: var(--sans); font-size: 14px; font-weight: 700; cursor: pointer; transition: border-color .18s, background .18s; }
