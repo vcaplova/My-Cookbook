@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
-import { PinIcon, EditIcon, ImageIcon, StarIcon } from '../components/Icons';
+import { PinIcon, ImageIcon, StarIcon } from '../components/Icons';
 
 function RecipeImg({ recipe, phClass }) {
   if (recipe.img) return <img src={recipe.img} alt="" loading="lazy" onError={(e) => { e.target.style.display = 'none'; }} />;
@@ -30,13 +30,11 @@ const PeopleSm = () => (
 
 export default function LibraryPage({ onAdd }) {
   const {
-    filtered, recipes, colById, view, filter, search, searchActive,
+    filtered, recipes, colById, view, filter,
     maxTime, setMaxTime, servingsBand, setServingsBand,
-    activeTags, setActiveTags, allTags, toggleStar, togglePin, toast,
-    removeTag,
+    toggleStar, togglePin, toast,
   } = useLibrary();
   const navigate = useNavigate();
-  const [tagEdit, setTagEdit] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
   const activeCardTimer = useRef(null);
 
@@ -90,15 +88,6 @@ export default function LibraryPage({ onAdd }) {
     toast(r.pinned ? `"${r.title}" unpinned` : `"${r.title}" pinned`);
   };
   const doStar = (e, r) => { e.stopPropagation(); toggleStar(r.id); };
-  const clickTag = (e, t) => {
-    if (tagEdit) {
-      if (!e.target.classList.contains('tx')) return;
-      removeTag(t);
-      toast(`"${t}" removed`);
-    } else {
-      setActiveTags((ts) => (ts.includes(t) ? ts.filter((x) => x !== t) : [...ts, t]));
-    }
-  };
 
   const listSorted = filtered.slice().sort((a, b) => {
     if (b.pinned !== a.pinned) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
@@ -134,20 +123,6 @@ export default function LibraryPage({ onAdd }) {
         </div>
       </div>
 
-      {allTags.length > 0 && (searchActive || search || activeTags.length > 0) && (
-        <div className="tag-bar-wrap">
-          <div className={tagEdit ? 'tag-bar edit-mode' : 'tag-bar'}>
-            {allTags.map((t) => (
-              <span key={t} className={activeTags.includes(t) ? 'tag-pill on' : 'tag-pill'} onClick={(e) => clickTag(e, t)}>
-                {t}<span className="tx">✕</span>
-              </span>
-            ))}
-          </div>
-          <button className={tagEdit ? 'btn-tag-edit editing' : 'btn-tag-edit'} title="Edit tags" onClick={() => setTagEdit((v) => !v)}>
-            <EditIcon size={11} strokeWidth={2.5} />
-          </button>
-        </div>
-      )}
 
       {filtered.length === 0 ? (
         <div className="empty">
