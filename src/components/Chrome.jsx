@@ -8,10 +8,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useIsMobile } from '../lib/useIsMobile';
 
 export function TopBar({ onAdd, onSettings }) {
-  const { search, setSearch, view, setView, setFilter, setActiveTags } = useLibrary();
+  const { search, setSearch, view, setView, setFilter, setActiveTags, searchActive, setSearchActive } = useLibrary();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const [searchActive, setSearchActive] = useState(false);
   const searchBarRef = useRef(null);
 
   const cancelSearch = () => { setSearch(''); setSearchActive(false); };
@@ -70,7 +69,7 @@ export function TopBar({ onAdd, onSettings }) {
         ) : (
           <div className="search-wrap">
             <SearchIcon className="search-icon" />
-            <input type="text" placeholder="Search recipes, tags…" value={search} onChange={(e) => setSearch(e.target.value)} />
+            <input type="text" placeholder="Search recipes, tags…" value={search} onChange={(e) => setSearch(e.target.value)} onFocus={() => setSearchActive(true)} onBlur={() => setSearchActive(false)} />
           </div>
         )}
       </div>
