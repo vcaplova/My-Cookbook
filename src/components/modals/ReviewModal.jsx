@@ -4,9 +4,10 @@ import { compressImageFile, approxKB } from '../../lib/image';
 import { XIcon, PlusIcon, ImageIcon } from '../Icons';
 
 export default function ReviewModal({ open, draft, editingId, isManual, onClose, onBack }) {
-  const { collections, addRecipe, updateRecipe, toast } = useLibrary();
+  const { collections, addRecipe, updateRecipe, toast, addCollection } = useLibrary();
   const [form, setForm] = useState(null);
   const [tagInput, setTagInput] = useState('');
+  const [newColInput, setNewColInput] = useState('');
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef(null);
 
@@ -156,6 +157,34 @@ export default function ReviewModal({ open, draft, editingId, isManual, onClose,
               {c.emoji || '🍽'} {c.name}
             </label>
           ))}
+        </div>
+        <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+          <input
+            value={newColInput}
+            onChange={(e) => setNewColInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                const name = newColInput.trim();
+                if (!name) return;
+                addCollection(name, null, '🍽');
+                set('collections', [...form.collections, name]);
+                setNewColInput('');
+              }
+            }}
+            placeholder="New collection…"
+            style={{ flex: 1, height: 36, background: 'var(--parchment)', border: '1.5px solid var(--linen)', borderRadius: 'var(--r-sm)', padding: '0 12px', fontFamily: 'var(--sans)', fontSize: 13, color: 'var(--ink)', outline: 'none' }}
+          />
+          <button
+            onClick={() => {
+              const name = newColInput.trim();
+              if (!name) return;
+              addCollection(name, null, '🍽');
+              set('collections', [...form.collections, name]);
+              setNewColInput('');
+            }}
+            style={{ height: 36, padding: '0 14px', background: 'var(--terra)', color: '#fff', border: 'none', borderRadius: 'var(--r-sm)', fontFamily: 'var(--sans)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
+          >Add</button>
         </div>
 
         <p className="sec-title" style={{ marginTop: 20 }}>Personal Notes</p>
