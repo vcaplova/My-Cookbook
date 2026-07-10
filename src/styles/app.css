@@ -111,9 +111,13 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
   width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; border: none;
   background: rgba(255,255,255,.06); color: var(--s-dim); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: background .15s, color .15s;
+  transition: background .15s, color .15s, opacity .15s;
 }
 .nav-item-edit:hover { background: rgba(255,255,255,.14); color: var(--s-text); }
+@media (hover: hover) and (pointer: fine) {
+  .nav-item-edit { opacity: 0; }
+  .nav-item:hover .nav-item-edit { opacity: 1; }
+}
 .nav-item.active .nav-count { color: var(--terra-lt); }
 .col-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 
