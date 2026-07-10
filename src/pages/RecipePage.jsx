@@ -88,6 +88,7 @@ export default function RecipePage({ onEdit }) {
             <h1 className="d-title">{recipe.title}</h1>
             <div className="d-meta-row">
               <div className="d-meta"><span className="d-meta-label">Cook Time</span><span className="d-meta-val">{recipe.cookTime || '—'}</span></div>
+              <div className="d-meta-divider" />
               <div className="d-meta"><span className="d-meta-label">Servings</span>
                 <div className="scaler">
                   <button className="scaler-btn" onClick={() => setServings((s) => Math.max(1, s - 1))}>−</button>
