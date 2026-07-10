@@ -38,6 +38,13 @@ export default function LibraryPage({ onAdd }) {
   const navigate = useNavigate();
   const [tagEdit, setTagEdit] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
+  const activeCardTimer = useRef(null);
+
+  const activateCard = (id) => {
+    if (activeCardTimer.current) clearTimeout(activeCardTimer.current);
+    setActiveCard(id);
+    activeCardTimer.current = setTimeout(() => setActiveCard(null), 1500);
+  };
 
   const title =
     filter === 'recent' ? 'Recently Added' :
@@ -158,11 +165,7 @@ export default function LibraryPage({ onAdd }) {
             <div
               key={r.id}
               className={`recipe-card${activeCard === r.id ? ' touch-active' : ''}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (activeCard !== r.id) setActiveCard(r.id);
-                else setActiveCard(null);
-              }}
+              onClick={(e) => { e.stopPropagation(); activateCard(r.id); }}
             >
               <div className="card-img">
                 <RecipeImg recipe={r} phClass="card-img-ph" />
