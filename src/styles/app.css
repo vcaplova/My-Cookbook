@@ -799,6 +799,7 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
   cursor: pointer; border: none; z-index: 3;
   color: var(--muted);
   opacity: 0;
+  pointer-events: none;
   transition: opacity .15s, background .15s, transform .15s, color .15s;
 }
 .card-pin-btn.pinned { opacity: 0; background: rgba(250,246,238,.92); color: var(--terra); }
@@ -1089,10 +1090,10 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
   .btn-tag-add:hover { border-color: var(--terra); color: var(--terra); background: var(--cream); }
   .tag-add-confirm:hover { background: var(--terra-dk); }
   .tag-pill-rm:hover { color: #fff; }
-  .recipe-card:hover .card-pin-btn { opacity: 1; }
+  .recipe-card:hover .card-pin-btn { opacity: 1; pointer-events: auto; }
   .card-pin-btn:hover { transform: scale(1.1); background: #fff; color: var(--terra); }
   .card-pin-btn.pinned:hover { opacity: 1; background: #fff; color: var(--terra-dk); }
-  .recipe-card:hover .card-pin-btn.pinned { opacity: 1; }
+  .recipe-card:hover .card-pin-btn.pinned { opacity: 1; pointer-events: auto; }
   .list-pin:hover { background: var(--linen); color: var(--terra); }
   .list-pin.pinned:hover { color: var(--terra-dk); }
   .detail-pin:hover { transform: scale(1.1); background: var(--cream); }
