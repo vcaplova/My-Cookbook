@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import { PinIcon, EditIcon, ImageIcon, StarIcon } from '../components/Icons';
@@ -45,6 +45,12 @@ export default function LibraryPage({ onAdd }) {
     setActiveCard(id);
     activeCardTimer.current = setTimeout(() => setActiveCard(null), 1500);
   };
+
+  useEffect(() => {
+    const dismiss = () => setActiveCard(null);
+    document.addEventListener('touchstart', dismiss, { passive: true });
+    return () => document.removeEventListener('touchstart', dismiss);
+  }, []);
 
   const title =
     filter === 'recent' ? 'Recently Added' :
@@ -165,6 +171,7 @@ export default function LibraryPage({ onAdd }) {
             <div
               key={r.id}
               className={`recipe-card${activeCard === r.id ? ' touch-active' : ''}`}
+              onTouchStart={(e) => e.stopPropagation()}
               onClick={(e) => { e.stopPropagation(); if (window.matchMedia('(hover: none)').matches) activateCard(r.id); else open(r.id); }}
             >
               <div className="card-img">
