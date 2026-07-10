@@ -798,16 +798,15 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
   border-radius: 50%; display: flex; align-items: center; justify-content: center;
   cursor: pointer; border: none; z-index: 3;
   color: var(--muted);
-  opacity: 1;
-  pointer-events: auto;
+  opacity: 0;
+  pointer-events: none;
   transition: opacity .15s, background .15s, transform .15s, color .15s;
 }
-.card-pin-btn.pinned { opacity: 1; background: rgba(250,246,238,.92); color: var(--terra); }
+.card-pin-btn.pinned { opacity: 0; background: rgba(250,246,238,.92); color: var(--terra); }
 
-@media (hover: hover) and (pointer: fine) {
-  .card-pin-btn { opacity: 0; pointer-events: none; }
-  .card-pin-btn.pinned { opacity: 0; }
-}
+/* Touch-active: show controls on first tap (mobile) */
+.recipe-card.touch-active .card-pin-btn,
+.recipe-card.touch-active .card-pin-btn.pinned { opacity: 1; pointer-events: auto; }
 
 /* Pinned corner ribbon — always visible when pinned */
 .pin-corner {
