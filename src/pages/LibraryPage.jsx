@@ -154,7 +154,7 @@ export default function LibraryPage({ onAdd }) {
       ) : view === 'grid' ? (
         <div className="recipe-grid">
           {filtered.map((r) => (
-            <div key={r.id} className="recipe-card" onClick={() => open(r.id)}>
+            <div key={r.id} className="recipe-card">
               <div className="card-img">
                 <RecipeImg recipe={r} phClass="card-img-ph" />
                 {r.pinned && <div className="pin-corner"><div className="pin-corner-label"><PinSolid /></div></div>}
