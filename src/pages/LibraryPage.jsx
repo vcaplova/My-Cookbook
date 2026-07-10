@@ -165,7 +165,7 @@ export default function LibraryPage({ onAdd }) {
             <div
               key={r.id}
               className={`recipe-card${activeCard === r.id ? ' touch-active' : ''}`}
-              onClick={(e) => { e.stopPropagation(); if (window.matchMedia('(hover: none)').matches) activateCard(r.id); }}
+              onClick={(e) => { e.stopPropagation(); if (window.matchMedia('(hover: none)').matches) activateCard(r.id); else open(r.id); }}
             >
               <div className="card-img">
                 <RecipeImg recipe={r} phClass="card-img-ph" />
