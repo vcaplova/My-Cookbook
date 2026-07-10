@@ -129,7 +129,7 @@ export default function LibraryPage({ onAdd }) {
               </span>
             ))}
           </div>
-          <button className="btn-tag-edit" title="Edit tags" onClick={() => setTagEdit((v) => !v)}>
+          <button className={tagEdit ? 'btn-tag-edit editing' : 'btn-tag-edit'} title="Edit tags" onClick={() => setTagEdit((v) => !v)}>
             <EditIcon size={11} strokeWidth={2.5} />
           </button>
         </div>

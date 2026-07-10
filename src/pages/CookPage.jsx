@@ -137,7 +137,7 @@ export default function CookPage({ onEdit }) {
             <button className="mbtn on"><FlameIcon /> Cook</button>
           </div>
           <DetailBarActions onEdit={() => onEdit(recipe)} onDelete={doDelete} />
-          <button className={recipe.pinned ? 'detail-pin on' : 'detail-pin'} title={recipe.pinned ? 'Unpin recipe' : 'Pin recipe'}
+          <button className={recipe.pinned ? 'detail-pin pinned' : 'detail-pin'} title={recipe.pinned ? 'Unpin recipe' : 'Pin recipe'}
             onClick={() => { togglePin(recipe.id); toast(recipe.pinned ? `"${recipe.title}" unpinned` : `"${recipe.title}" pinned`); }}>
             <PinIcon size={14} />
           </button>
