@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import {
   BrandIcon, SearchIcon, SettingsIcon,
-  GridIcon, ListIcon, PlusIcon, BookIcon, ClockIcon, StarIcon, WarnIcon, ShoppingBagIcon, EditIcon,
+  GridIcon, ListIcon, PlusIcon, BookIcon, ClockIcon, StarIcon, WarnIcon, ShoppingBagIcon, EditIcon, TrashIcon,
 } from './Icons';
 import { useEffect, useRef, useState } from 'react';
 import { useIsMobile } from '../lib/useIsMobile';
@@ -89,10 +89,19 @@ export function TopBar({ onAdd, onSettings }) {
 }
 
 export function Sidebar({ onNewCollection, onEditCollection }) {
-  const { recipes, collections, filter, setFilter, shoppingList } = useLibrary();
+  const { recipes, collections, filter, setFilter, shoppingList, deleteCollection, confirm, toast } = useLibrary();
   const navigate = useNavigate();
   const location = useLocation();
   const now = Date.now();
+  const doDeleteCollection = (id) => {
+    const c = collections.find((x) => x.id === id);
+    if (!c) return;
+    const count = recipes.filter((r) => r.collections.includes(id)).length;
+    confirm(
+      `Delete "${c.name}"?` + (count ? ` It will be removed from ${count} recipe${count > 1 ? 's' : ''}.` : ''),
+      () => { deleteCollection(id); toast(`"${c.name}" deleted`, true); }
+    );
+  };
   const counts = {
     all: recipes.length,
     recent: recipes.filter((r) => now - r.addedAt < 1000 * 60 * 60 * 36).length,
@@ -137,13 +146,14 @@ export function Sidebar({ onNewCollection, onEditCollection }) {
                 <span className="nav-icon" style={{ fontSize: 15 }}>{c.emoji || '🍽'}</span>
                 <span className="nav-text">{c.name}</span>
                 <span className="nav-count">{count}</span>
-                <button
-                  className="nav-item-edit"
-                  title="Edit collection"
-                  onClick={(e) => { e.stopPropagation(); onEditCollection(c.id); }}
-                >
-                  <EditIcon size={12} strokeWidth={2.2} />
-                </button>
+                <span className="col-actions">
+                  <button className="col-action-btn" title="Rename" onClick={(e) => { e.stopPropagation(); onEditCollection(c.id); }}>
+                    <EditIcon size={11} strokeWidth={2.5} />
+                  </button>
+                  <button className="col-action-btn del" title="Delete" onClick={(e) => { e.stopPropagation(); doDeleteCollection(c.id); }}>
+                    <TrashIcon size={11} strokeWidth={2.5} />
+                  </button>
+                </span>
               </div>
             );
           })}
