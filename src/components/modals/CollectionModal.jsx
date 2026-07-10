@@ -4,18 +4,16 @@ import { COLLECTION_COLORS, FOOD_EMOJIS } from '../../lib/seed';
 import { XIcon } from '../Icons';
 
 export default function CollectionModal({ open, editId, onClose }) {
-  const { collections, recipes, addCollection, updateCollection, deleteCollection, confirm, toast } = useLibrary();
+  const { collections, addCollection, updateCollection, toast } = useLibrary();
   const editing = editId ? collections.find((c) => c.id === editId) : null;
 
   const [name, setName] = useState('');
   const [emoji, setEmoji] = useState('🍽');
-  const [color, setColor] = useState(COLLECTION_COLORS[0]);
 
   useEffect(() => {
     if (open) {
       setName(editing ? editing.name : '');
       setEmoji(editing ? (editing.emoji || '🍽') : '🍽');
-      setColor(editing ? editing.color : COLLECTION_COLORS[0]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, editId]);
@@ -26,22 +24,17 @@ export default function CollectionModal({ open, editId, onClose }) {
     const n = name.trim();
     if (!n) { toast('Give the collection a name'); return; }
     if (editing) {
-      updateCollection(editing.id, { name: n, emoji, color });
+      updateCollection(editing.id, { name: n, emoji });
       toast(`"${n}" updated`, true);
     } else {
+      // Colour is no longer user-facing — assign one automatically so the
+      // underlying data stays consistent, cycling through the palette.
+      const color = COLLECTION_COLORS[collections.length % COLLECTION_COLORS.length];
       const ok = addCollection(n, color, emoji);
       if (!ok) { toast('A collection with that name already exists'); return; }
       toast(`"${n}" created`, true);
     }
     onClose();
-  };
-
-  const doDelete = () => {
-    const count = recipes.filter((r) => r.collections.includes(editing.id)).length;
-    confirm(
-      `Delete "${editing.name}"?` + (count ? ` It will be removed from ${count} recipe${count > 1 ? 's' : ''}.` : ''),
-      () => { deleteCollection(editing.id); toast(`"${editing.name}" deleted`, true); onClose(); }
-    );
   };
 
   return (
@@ -67,19 +60,6 @@ export default function CollectionModal({ open, editId, onClose }) {
               ))}
             </div>
           </div>
-          <div>
-            <label className="field-label">Colour</label>
-            <div className="palette">
-              {COLLECTION_COLORS.map((c) => (
-                <div key={c} className={c === color ? 'swatch on' : 'swatch'} style={{ background: c }} onClick={() => setColor(c)}></div>
-              ))}
-            </div>
-          </div>
-          {editing && (
-            <div>
-              <button className="btn-del-confirm" style={{ width: '100%' }} onClick={doDelete}>Delete collection</button>
-            </div>
-          )}
         </div>
         <div className="modal-footer">
           <button className="btn-back" onClick={onClose}>Cancel</button>
