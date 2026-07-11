@@ -181,8 +181,8 @@ export function convertIngredient(text, unitMode) {
 export function annotateSteps(text) {
   var out = normalizeFractions(text);
 
-  // °F → °F (°C)
-  out = out.replace(/(\d+(?:\.\d+)?)\s*°F/g, function(m, f) {
+  // °F → °F (°C), only if not already followed by °C
+  out = out.replace(/(\d+(?:\.\d+)?)\s*°F(?!\s*\(?\s*\d+°C)/g, function(m, f) {
     return f + '°F (' + Math.round((parseFloat(f) - 32) * 5 / 9) + '°C)';
   });
 
