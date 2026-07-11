@@ -91,9 +91,9 @@ export default function RecipePage({ onEdit }) {
               <div className="d-meta-divider" />
               <div className="d-meta"><span className="d-meta-label">Servings</span>
                 <div className="scaler">
-                  <button className="scaler-btn" onClick={() => setServings((s) => Math.max(1, s - 1))}>−</button>
+                  <button className="scaler-btn" onClick={(e) => { e.currentTarget.blur(); setServings((s) => Math.max(1, s - 1)); }}>−</button>
                   <span className="scaler-val">{servings}</span>
-                  <button className="scaler-btn" onClick={() => setServings((s) => s + 1)}>+</button>
+                  <button className="scaler-btn" onClick={(e) => { e.currentTarget.blur(); setServings((s) => s + 1); }}>+</button>
                 </div>
               </div>
             </div>
@@ -127,7 +127,7 @@ export default function RecipePage({ onEdit }) {
                   <ShoppingBagIcon size={13} /> {allIngredientsInList ? 'Remove' : 'Add'}
                 </button>
                 <button className={unitMode === 'metric' ? 'btn-unit-toggle metric' : 'btn-unit-toggle'} title="Convert units"
-                  onClick={() => setUnitMode((m) => (m === 'original' ? 'metric' : 'original'))}>
+                  onClick={(e) => { e.currentTarget.blur(); setUnitMode((m) => (m === 'original' ? 'metric' : 'original')); }}>
                   <span>{unitMode === 'metric' ? 'METRIC' : 'ORIGINAL'}</span> <UnitIcon />
                 </button>
               </div>
