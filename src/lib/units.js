@@ -177,4 +177,21 @@ export function convertIngredient(text, unitMode) {
   if (/^\s*\d+(?:\.\d+)?\s*(g|kg|ml|l)\b/i.test(out)) return out;
   return convertToMetric(out);
 }
+// Always annotate steps with metric equivalents in brackets, regardless of unit mode
+export function annotateSteps(text) {
+  var out = normalizeFractions(text);
+
+  // °F → °F (°C)
+  out = out.replace(/(\d+(?:\.\d+)?)\s*°F/g, function(m, f) {
+    return f + '°F (' + Math.round((parseFloat(f) - 32) * 5 / 9) + '°C)';
+  });
+
+  // inches → inch (cm)
+  out = out.replace(/(\d+(?:\.\d+)?)-?\s*(?:inches?|inch)(?!\s*\(\d+(?:\.\d+)?cm\))(?![a-zA-Z])/gi, function(m, n) {
+    return n + '-inch (' + roundMetric(parseFloat(n) * 2.54) + 'cm)';
+  });
+
+  return out;
+}
+
 export { convertToMetric };
