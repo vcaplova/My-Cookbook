@@ -35,7 +35,6 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 button { -webkit-tap-highlight-color: transparent; outline: none; user-select: none; -webkit-appearance: none; appearance: none; }
 button:focus { outline: none; box-shadow: none; }
 button:focus:not(:focus-visible) { outline: none; box-shadow: none; filter: none; }
-button:focus-visible { outline: 2px solid var(--terra); outline-offset: 2px; }
 
 /* ── TOP BAR ──────────────────────────────────────────── */
 .topbar {
@@ -1070,8 +1069,8 @@ button:focus-visible { outline: 2px solid var(--terra); outline-offset: 2px; }
    Consolidated here so touch devices never get a "stuck hover" state
    after tapping — see project notes. */
 @media (hover: hover) and (pointer: fine) {
-  .vbtn:hover:not(.on) { color: var(--walnut); }
-  .btn-add:hover { background: var(--terra-dk); transform: translateY(-1px); }
+  .vbtn:hover:not(.on):not(:focus) { color: var(--walnut); }
+  .btn-add:hover:not(:focus) { background: var(--terra-dk); transform: translateY(-1px); }
   .nav-item:hover { background: rgba(255,255,255,.05); }
   .nav-item:hover .nav-icon { color: var(--terra-lt); }
   .nav-item-edit:hover { background: rgba(255,255,255,.14); color: var(--s-text); }
@@ -1079,7 +1078,7 @@ button:focus-visible { outline: 2px solid var(--terra); outline-offset: 2px; }
   .nav-item:hover .nav-count { display: none; }
   .col-action-btn:hover { background: rgba(255,255,255,.12); color: var(--terra-lt); }
   .col-action-btn.del:hover { color: #e07070; background: rgba(200,60,60,.2); }
-  .btn-new-col:hover { color: var(--terra-lt); }
+  .btn-new-col:hover:not(:focus) { color: var(--terra-lt); }
   .tag-pill:hover { background: var(--cream); }
   .tag-bar.edit-mode .tag-pill:hover { background: var(--terra-dk); border-color: var(--terra-dk); }
   .recipe-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(46,31,15,.15); }
@@ -1087,40 +1086,40 @@ button:focus-visible { outline: 2px solid var(--terra); outline-offset: 2px; }
   .card-fav:hover { transform: scale(1.12); background: #fff; }
   .list-item:hover { transform: translateX(3px); box-shadow: 0 4px 20px rgba(46,31,15,.13); }
   .list-fav:hover { background: var(--linen); }
-  .shop-add-btn:hover { background: var(--terra-dk); }
-  .shop-clear-btn:hover:not(:disabled) { background: var(--terra); color: #fff; }
-  .shop-item-remove:hover { background: var(--linen); color: var(--terra); }
-  .btn-cta:hover { background: var(--terra-dk); transform: translateY(-1px); }
-  .btn-x:hover { color: var(--terra); }
-  .btn-primary:hover:not(:disabled) { background: var(--terra-dk); }
+  .shop-add-btn:hover:not(:focus) { background: var(--terra-dk); }
+  .shop-clear-btn:hover:not(:disabled):not(:focus) { background: var(--terra); color: #fff; }
+  .shop-item-remove:hover:not(:focus) { background: var(--linen); color: var(--terra); }
+  .btn-cta:hover:not(:focus) { background: var(--terra-dk); transform: translateY(-1px); }
+  .btn-x:hover:not(:focus) { color: var(--terra); }
+  .btn-primary:hover:not(:disabled):not(:focus) { background: var(--terra-dk); }
   .palette-card:hover { border-color: var(--terra); transform: translateY(-1px); }
-  .btn-secondary:hover { border-color: var(--walnut); background: var(--linen); }
+  .btn-secondary:hover:not(:focus) { border-color: var(--walnut); background: var(--linen); }
   .review-hero:hover .review-hero-overlay { opacity: 1; }
-  .btn-del-row:hover { color: #c0392b; background: #fdf0ef; }
-  .btn-add-row:hover { border-color: var(--terra); color: var(--terra); }
+  .btn-del-row:hover:not(:focus) { color: #c0392b; background: #fdf0ef; }
+  .btn-add-row:hover:not(:focus) { border-color: var(--terra); color: var(--terra); }
   .tag-chip button:hover { color: #c0392b; }
-  .col-check:hover { background: var(--linen); }
-  .btn-save:hover { background: var(--terra-dk); }
-  .btn-back:hover { border-color: var(--walnut); background: var(--linen); }
+  .col-check:hover:not(:focus) { background: var(--linen); }
+  .btn-save:hover:not(:focus) { background: var(--terra-dk); }
+  .btn-back:hover:not(:focus) { border-color: var(--walnut); background: var(--linen); }
   .swatch:hover { transform: scale(1.15); }
-  .btn-del-confirm:hover { background: #a5301f; }
-  .btn-del-cancel:hover { background: var(--linen); }
-  .btn-detail-back:hover { color: var(--terra); }
-  .mbtn:hover:not(.on) { color: var(--walnut); }
-  .detail-fav:hover { transform: scale(1.1); }
-  .scaler-btn:hover { border-color: var(--terra); color: var(--terra); }
+  .btn-del-confirm:hover:not(:focus) { background: #a5301f; }
+  .btn-del-cancel:hover:not(:focus) { background: var(--linen); }
+  .btn-detail-back:hover:not(:focus) { color: var(--terra); }
+  .mbtn:hover:not(.on):not(:focus) { color: var(--walnut); }
+  .detail-fav:hover:not(:focus) { transform: scale(1.1); }
+  .scaler-btn:hover:not(:focus) { border-color: var(--terra); color: var(--terra); }
   .cook-nav-btn:hover:not(:disabled) { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.35); }
   .cook-nav-btn.primary:hover:not(:disabled) { background: var(--terra-dk); border-color: var(--terra-dk); }
   .cook-nav-btn.done:hover { background: #3a6a3a; border-color: #3a6a3a; }
-  .btn-icon:hover { background: var(--cream); color: var(--walnut); }
+  .btn-icon:hover:not(:focus) { background: var(--cream); color: var(--walnut); }
   .btn-icon-del:hover { background: #fdf0ef !important; color: #c0392b !important; }
   .detail-more-menu button:hover { background: var(--linen); }
   .detail-more-menu button.danger:hover { background: #fdf0ef; }
   .fpill:hover { background: var(--cream); }
-  .btn-tag-edit:hover { background: var(--cream); color: var(--walnut); border-color: var(--linen); }
+  .btn-tag-edit:hover:not(:focus) { background: var(--cream); color: var(--walnut); border-color: var(--linen); }
   .tag-pill-rm:hover { color: #fff; }
-  .btn-tag-add:hover { border-color: var(--terra); color: var(--terra); background: var(--cream); }
-  .tag-add-confirm:hover { background: var(--terra-dk); }
+  .btn-tag-add:hover:not(:focus) { border-color: var(--terra); color: var(--terra); background: var(--cream); }
+  .tag-add-confirm:hover:not(:focus) { background: var(--terra-dk); }
   .tag-pill-rm:hover { color: #fff; }
   .recipe-card:hover .card-pin-btn { opacity: 1; pointer-events: auto; }
   .card-pin-btn:hover { transform: scale(1.1); background: #fff; color: var(--terra); }
@@ -1142,7 +1141,7 @@ button:focus-visible { outline: 2px solid var(--terra); outline-offset: 2px; }
   .img-thumb-rm:hover { background: #c0392b; }
   .img-add-more:hover { border-color: var(--terra); color: var(--terra); }
   .timer-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
-  .btn-unit-toggle:hover { background: var(--cream); color: var(--walnut); }
-  .btn-unit-toggle.metric:hover { background: var(--terra-dk); }
+  .btn-unit-toggle:hover:not(:focus) { background: var(--cream); color: var(--walnut); }
+  .btn-unit-toggle.metric:hover:not(:focus) { background: var(--terra-dk); }
   .emoji-opt:hover { background: var(--linen); }
 }
