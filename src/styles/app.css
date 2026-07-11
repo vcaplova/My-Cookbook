@@ -529,7 +529,8 @@ button:focus:not(:focus-visible) { outline: none; box-shadow: none; filter: none
 .cook-prog-fill { height: 100%; background: var(--terra); transition: width .4s ease; }
 .cook-body { flex: 1; display: flex; overflow: hidden; }
 .cook-cur { flex: 1; display: flex; flex-direction: column; padding: 44px 48px 32px; overflow-y: auto; }
-.cook-step-label { font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--terra-lt); margin-bottom: 16px; }
+.cook-step-label { font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--terra-lt); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.cook-section-label { background: rgba(255,255,255,.1); border-radius: 99px; padding: 2px 10px; font-size: 10px; letter-spacing: .12em; color: rgba(255,255,255,.6); font-weight: 700; text-transform: uppercase; }
 .cook-step-text { font-family: var(--serif); font-size: 24px; font-weight: 400; color: var(--cream); line-height: 1.6; flex: 1; margin-bottom: 32px; }
 .cook-ing-title { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--s-dim); margin-bottom: 10px; }
 .cook-ings { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,.08); }
