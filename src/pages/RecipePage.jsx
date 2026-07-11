@@ -9,7 +9,7 @@ import DetailBarActions from '../components/DetailBarActions';
 export default function RecipePage({ onEdit }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { recipes, colById, toggleStar, togglePin, deleteRecipe, updateRecipe, confirm, toast, unitMode, setUnitMode, shoppingList, addToShoppingList, addAllToShoppingList, removeFromShoppingListByText, removeManyFromShoppingList } = useLibrary();
+  const { recipes, colById, toggleStar, togglePin, deleteRecipe, confirm, toast, unitMode, setUnitMode, shoppingList, addToShoppingList, addAllToShoppingList, removeFromShoppingListByText, removeManyFromShoppingList } = useLibrary();
   const recipe = recipes.find((r) => r.id === Number(id));
 
   const [servings, setServings] = useState(recipe?.servings || 4);
@@ -94,18 +94,6 @@ export default function RecipePage({ onEdit }) {
                   <button className="scaler-btn" tabIndex={-1} onClick={(e) => { e.currentTarget.blur(); setServings((s) => Math.max(1, s - 1)); }}>−</button>
                   <span className="scaler-val">{servings}</span>
                   <button className="scaler-btn" tabIndex={-1} onClick={(e) => { e.currentTarget.blur(); setServings((s) => s + 1); }}>+</button>
-                </div>
-              </div>
-              <div className="d-meta-divider" />
-              <div className="d-meta">
-                <span className="d-meta-label">Rating</span>
-                <div className="d-rating">
-                  {[1,2,3,4,5].map((n) => (
-                    <button key={n} tabIndex={-1} className={`d-rating-star${(recipe.rating || 0) >= n ? ' on' : ''}`}
-                      onClick={() => updateRecipe(recipe.id, { rating: recipe.rating === n ? 0 : n })}>
-                      ★
-                    </button>
-                  ))}
                 </div>
               </div>
             </div>
