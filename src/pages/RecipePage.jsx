@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
 import { scaleIng } from '../lib/utils';
-import { convertIngredient } from '../lib/units';
+import { convertIngredient, convertToMetric } from '../lib/units';
 import { ChevronLeft, ListIcon, FlameIcon, PinIcon, StarIcon, UnitIcon, ImageIcon, ShoppingBagIcon, PlusIcon, MinusIcon } from '../components/Icons';
 import DetailBarActions from '../components/DetailBarActions';
 
@@ -158,7 +158,7 @@ export default function RecipePage({ onEdit }) {
               {recipe.steps.map((s, i) => (
                 <div key={i} className="step-item">
                   <div className="step-num">{i + 1}</div>
-                  <div className="step-text">{s}</div>
+                  <div className="step-text">{unitMode === 'metric' ? convertToMetric(s) : s}</div>
                 </div>
               ))}
             </div>
