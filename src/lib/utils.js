@@ -116,6 +116,19 @@ export function getStepIngs(r, stepIdx) {
   var steps = r.steps || [];
   var stopwords = new Set(['with','and','the','for','all','purpose','into','from','over','until','then','this','that','them','some','each','both','more','well','very','just','also','only','such','even','once','most','make','made','high','heat','cool','cold','warm','room','temp','temperature','large','small','medium','whole','fresh','dried','ground','optional','taste','chopped','minced','diced','grated','sliced','unsalted','salted']);
 
+  // Build sections: [{header, ingredients:[]}]
+  var sections = [];
+  var current = { header: null, ingredients: [] };
+  (r.ingredients || []).forEach(function(ing) {
+    if (ing.startsWith('##')) {
+      if (current.ingredients.length || current.header) sections.push(current);
+      current = { header: ing.replace(/^##\s*/, '').toLowerCase(), ingredients: [] };
+    } else {
+      current.ingredients.push(ing);
+    }
+  });
+  sections.push(current);
+
   function getWords(ing) {
     var name = ing.replace(/^[\d\/½¼¾⅓⅔⅛⅜⅝⅞\s]+(g|kg|ml|l|tsp|tbsp|cup|oz|lb|pinch|x|large|small|medium|whole)?\s*/i,'').toLowerCase();
     return name.split(/[\s,()]+/).filter(function(w){ return w.length > 3 && !stopwords.has(w); });
@@ -129,14 +142,45 @@ export function getStepIngs(r, stepIdx) {
     });
   }
 
-  return r.ingredients.filter(function(ing){
-    if (ing.startsWith('##')) return false; // skip section headers
-    // Find the first step this ingredient matches
-    var firstMatch = -1;
-    for (var i = 0; i < steps.length; i++) {
-      if (matches(ing, steps[i].toLowerCase())) { firstMatch = i; break; }
+  // For each section, score how many of its ingredients match the step —
+  // this tells us which section a step "belongs to"
+  function sectionScore(sec, stepText) {
+    return sec.ingredients.filter(function(ing){ return matches(ing, stepText); }).length;
+  }
+
+  var result = [];
+  sections.forEach(function(sec) {
+    // Which step index is the best match for this section's first appearance?
+    // Find the first step where any ingredient from this section matches
+    var sectionFirstStep = -1;
+    for (var si = 0; si < steps.length; si++) {
+      if (sec.ingredients.some(function(ing){ return matches(ing, steps[si].toLowerCase()); })) {
+        sectionFirstStep = si;
+        break;
+      }
     }
-    return firstMatch === stepIdx;
+
+    sec.ingredients.forEach(function(ing) {
+      if (ing.startsWith('##')) return;
+      // Find the first step this specific ingredient matches, but only within
+      // steps that "belong" to this section (score > 0 or no other section scores higher)
+      var firstMatch = -1;
+      for (var i = 0; i < steps.length; i++) {
+        if (!matches(ing, steps[i].toLowerCase())) continue;
+        // If multiple sections have ingredients, prefer the step where this section scores highest
+        if (sections.length > 1) {
+          var myScore = sectionScore(sec, steps[i].toLowerCase());
+          var otherSectionsScore = sections.filter(function(s){ return s !== sec; })
+            .reduce(function(max, s){ return Math.max(max, sectionScore(s, steps[i].toLowerCase())); }, 0);
+          if (myScore >= otherSectionsScore) { firstMatch = i; break; }
+        } else {
+          firstMatch = i; break;
+        }
+      }
+      if (firstMatch === stepIdx) result.push(ing);
+    });
   });
+
+  return result;
 }
 
