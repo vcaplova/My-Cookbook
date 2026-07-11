@@ -35,6 +35,13 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 button { -webkit-tap-highlight-color: transparent; outline: none; user-select: none; -webkit-appearance: none; appearance: none; }
 button:focus { outline: none; }
 button:focus-visible { outline: 2px solid var(--terra); outline-offset: 2px; }
+.scaler-btn:focus:not(:focus-visible) { background: var(--parchment); border-color: var(--linen); color: var(--walnut); }
+.btn-unit-toggle:focus:not(:focus-visible) { background: var(--linen); color: var(--muted); }
+.btn-unit-toggle.metric:focus:not(:focus-visible) { background: var(--terra); color: #fff; }
+.mbtn:focus:not(:focus-visible) { background: transparent; color: var(--muted); }
+.mbtn.on:focus:not(:focus-visible) { background: var(--cream); color: var(--terra); }
+.vbtn:focus:not(:focus-visible) { background: transparent; color: var(--muted); }
+.vbtn.on:focus:not(:focus-visible) { background: var(--cream); color: var(--terra); }
 
 /* ── TOP BAR ──────────────────────────────────────────── */
 .topbar {
