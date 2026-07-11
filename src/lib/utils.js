@@ -113,13 +113,11 @@ export function fmtNum(n) {
 }
 
 
-// Shared helper: parse ingredient sections and assign each step to a section
-// by finding which consecutive block of steps each section "owns".
 function buildSectionMap(r) {
   var steps = r.steps || [];
   var stopwords = new Set(['with','and','the','for','all','purpose','into','from','over','until','then','this','that','them','some','each','both','more','well','very','just','also','only','such','even','once','most','make','made','high','heat','cool','cold','warm','room','temp','temperature','large','small','medium','whole','fresh','dried','ground','optional','taste','chopped','minced','diced','grated','sliced','unsalted','salted']);
 
-  // Parse sections
+  // Parse sections in order
   var sections = [];
   var current = { header: null, ingredients: [] };
   (r.ingredients || []).forEach(function(ing) {
@@ -131,6 +129,8 @@ function buildSectionMap(r) {
     }
   });
   sections.push(current);
+
+  var hasSections = sections.length > 1 && sections[0].header;
 
   function getWords(ing) {
     var name = ing.replace(/^[\d\/½¼¾⅓⅔⅛⅜⅝⅞\s]+(g|kg|ml|l|tsp|tbsp|cup|oz|lb|pinch|x|large|small|medium|whole)?\s*/i,'').toLowerCase();
@@ -145,39 +145,19 @@ function buildSectionMap(r) {
     });
   }
 
-  // For each section find its "first step" — the first step where any of its
-  // UNIQUE ingredients appear (ingredients that don't appear in other sections)
-  var hasSections = sections.length > 1 && sections[0].header;
-
-  // Find which step each section first appears in, using unique ingredients
-  var sectionFirstStep = sections.map(function(sec) {
-    // Get words unique to this section (not shared with any other section)
-    var uniqueIngs = sec.ingredients.filter(function(ing) {
-      var words = getWords(ing);
-      return words.some(function(w) {
-        return !sections.filter(function(s){ return s !== sec; }).some(function(s){
-          return s.ingredients.some(function(oi){ return getWords(oi).indexOf(w) >= 0; });
-        });
-      });
-    });
-    // Fall back to all ingredients if none are unique
-    var searchIngs = uniqueIngs.length ? uniqueIngs : sec.ingredients;
-    for (var i = 0; i < steps.length; i++) {
-      var st = steps[i].toLowerCase();
-      if (searchIngs.some(function(ing){ return ingMatchesStep(ing, st); })) return i;
-    }
-    return -1;
+  // Assign steps to sections sequentially in order —
+  // divide steps proportionally by ingredient count, in the same order as sections appear
+  var totalIngs = sections.reduce(function(s, sec){ return s + Math.max(sec.ingredients.length, 1); }, 0);
+  var stepSections = [];
+  var assigned = 0;
+  sections.forEach(function(sec, si) {
+    var share = Math.round((sec.ingredients.length / totalIngs) * steps.length);
+    if (si === sections.length - 1) share = steps.length - assigned; // last section gets remainder
+    for (var k = 0; k < share; k++) stepSections.push(si);
+    assigned += share;
   });
-
-  // Assign each step to a section: step belongs to section whose firstStep is
-  // the largest value <= stepIdx (i.e. the most recently started section)
-  var stepSections = steps.map(function(_, si) {
-    var best = 0;
-    for (var s = 0; s < sections.length; s++) {
-      if (sectionFirstStep[s] >= 0 && sectionFirstStep[s] <= si) best = s;
-    }
-    return best;
-  });
+  // Pad in case of rounding issues
+  while (stepSections.length < steps.length) stepSections.push(sections.length - 1);
 
   return { sections: sections, stepSections: stepSections, ingMatchesStep: ingMatchesStep, hasSections: hasSections };
 }
@@ -192,11 +172,10 @@ export function getStepIngs(r, stepIdx) {
   var mySectionIdx = stepSections[stepIdx] !== undefined ? stepSections[stepIdx] : 0;
   var mySec = sections[mySectionIdx];
 
-  // Within this section's ingredients, find those whose first match is this step
+  // Within this section's steps, find ingredients whose first match is this step
   var result = [];
   mySec.ingredients.forEach(function(ing) {
     if (ing.startsWith('##')) return;
-    // Only search within steps assigned to this section
     var sectionSteps = steps.map(function(_, i){ return i; }).filter(function(i){ return stepSections[i] === mySectionIdx; });
     var firstMatch = -1;
     for (var k = 0; k < sectionSteps.length; k++) {
