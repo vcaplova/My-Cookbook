@@ -106,7 +106,7 @@ button:focus:not(:focus-visible) { outline: none; box-shadow: none; filter: none
 .nav-item[draggable] { cursor: grab; }
 .nav-item[draggable]:active { cursor: grabbing; }
 .nav-item-drag-over { background: rgba(192,105,74,.25) !important; border-left-color: var(--terra) !important; }
-.nav-item.active { background: rgba(192,105,74,.18); border-left-color: var(--terra); }
+.nav-item.active { background: color-mix(in srgb, var(--terra) 18%, transparent); border-left-color: var(--terra); }
 .nav-icon { width: 17px; height: 17px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--s-dim); transition: color .15s; }.nav-item.active .nav-icon { color: var(--terra-lt); }
 .nav-text { font-size: 13.5px; color: var(--s-text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .nav-item.active .nav-text { font-weight: 700; color: #fff; }
