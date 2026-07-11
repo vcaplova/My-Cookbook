@@ -130,6 +130,7 @@ export function getStepIngs(r, stepIdx) {
   }
 
   return r.ingredients.filter(function(ing){
+    if (ing.startsWith('##')) return false; // skip section headers
     // Find the first step this ingredient matches
     var firstMatch = -1;
     for (var i = 0; i < steps.length; i++) {
