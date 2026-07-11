@@ -134,6 +134,9 @@ export default function RecipePage({ onEdit }) {
             </div>
             <div>
               {recipe.ingredients.map((ing, i) => {
+                if (ing.startsWith('##')) {
+                  return <div key={i} className="ing-section-header">{ing.replace(/^##\s*/, '')}</div>;
+                }
                 const displayText = displayIngredients[i];
                 const inList = shoppingList.some((item) => item.recipeId === recipe.id && item.text === displayText);
                 return (
