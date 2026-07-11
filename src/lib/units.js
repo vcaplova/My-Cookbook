@@ -155,9 +155,10 @@ function convertToMetric(text) {
     return roundMetric(parseFloat(n) * 28.35) + 'g';
   });
 
-  // Inches → cm
-  out = out.replace(/([\d]+(?:\.[\d]+)?)\s*(?:inches?|inch|in\.)(?![a-zA-Z])/gi, function(m, n) {
-    return roundMetric(parseFloat(n) * 2.54) + 'cm';
+  // Inches → "12-inch (30.5cm)" in steps
+  out = out.replace(/(\d+(?:\.\d+)?)\s*(?:inches?|inch|in\.)(?![a-zA-Z])/gi, function(m, n) {
+    var cm = roundMetric(parseFloat(n) * 2.54);
+    return n + '-inch (' + cm + 'cm)';
   });
 
   return out;
@@ -166,13 +167,14 @@ function convertToMetric(text) {
 
 export function convertIngredient(text, unitMode) {
   if (unitMode !== 'metric') return text;
-  // Inch conversion always runs regardless of other units
-  let out = text.replace(/([\d]+(?:\.[\d]+)?)\s*(?:inches?|inch|in\.)(?![a-zA-Z])/gi, function(m, n) {
+  // Normalize fractions first so "1/4 inch" becomes "0.25 inch" before matching
+  let out = normalizeFractions(text);
+  // Inch → cm, always runs regardless of other units on the line
+  out = out.replace(/(\d+(?:\.\d+)?)\s*(?:inches?|inch|in\.)(?![a-zA-Z])/gi, function(m, n) {
     return roundMetric(parseFloat(n) * 2.54) + 'cm';
   });
   if (/tbsp|tsp|tablespoon|teaspoon/i.test(out)) return out;
   if (/^\s*\d+(?:\.\d+)?\s*(g|kg|ml|l)\b/i.test(out)) return out;
-  // Remove inch rule from convertToMetric call to avoid double-converting
   return convertToMetric(out);
 }
 export { convertToMetric };
