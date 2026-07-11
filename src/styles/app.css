@@ -484,8 +484,8 @@ button:focus:not(:focus-visible) { outline: none; box-shadow: none; filter: none
 .d-meta { display: flex; flex-direction: column; gap: 4px; align-items: center; text-align: center; }
 .d-meta-label { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .d-meta-val { font-size: 14px; font-weight: 700; color: var(--espresso); }
-.d-rating { display: flex; gap: 2px; }
-.d-rating-star { background: none; border: none; cursor: pointer; font-size: 18px; line-height: 1; padding: 0; color: var(--linen); transition: color .15s; }
+.d-rating { display: flex; gap: 0; }
+.d-rating-star { background: none; border: none; cursor: pointer; font-size: 17px; line-height: 1; padding: 0 1px; color: var(--linen); transition: color .15s; }
 .d-rating-star.on { color: #D4A843; }
 .d-rating-star:hover { color: #D4A843; }
 .scaler { display: flex; align-items: center; gap: 8px; }
