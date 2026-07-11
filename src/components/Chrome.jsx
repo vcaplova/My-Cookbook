@@ -70,6 +70,7 @@ export function TopBar({ onAdd, onSettings }) {
           <div className="search-wrap">
             <SearchIcon className="search-icon" />
             <input type="text" placeholder="Search recipes, tags…" value={search} onChange={(e) => setSearch(e.target.value)} onFocus={() => setSearchActive(true)} onBlur={() => setSearchActive(false)} />
+            {search && <button type="button" className="search-clear-btn" onMouseDown={(e) => { e.preventDefault(); setSearch(''); setSearchActive(false); }}>✕</button>}
           </div>
         )}
       </div>
