@@ -89,7 +89,9 @@ export function TopBar({ onAdd, onSettings }) {
 }
 
 export function Sidebar({ onNewCollection, onEditCollection }) {
-  const { recipes, collections, filter, setFilter, shoppingList, deleteCollection, confirm, toast } = useLibrary();
+  const { recipes, collections, filter, setFilter, shoppingList, deleteCollection, reorderCollections, confirm, toast } = useLibrary();
+  const dragId = useRef(null);
+  const [dragOver, setDragOver] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const now = Date.now();
@@ -142,7 +144,17 @@ export function Sidebar({ onNewCollection, onEditCollection }) {
             const count = recipes.filter((r) => r.collections.indexOf(c.id) >= 0).length;
             const f = 'col:' + c.id;
             return (
-              <div key={c.id} className={filter === f ? 'nav-item active' : 'nav-item'} onClick={() => go(f)}>
+              <div
+                key={c.id}
+                className={[filter === f ? 'nav-item active' : 'nav-item', dragOver === c.id ? 'nav-item-drag-over' : ''].filter(Boolean).join(' ')}
+                draggable
+                onDragStart={(e) => { dragId.current = c.id; e.dataTransfer.effectAllowed = 'move'; }}
+                onDragOver={(e) => { e.preventDefault(); setDragOver(c.id); }}
+                onDragLeave={() => setDragOver(null)}
+                onDrop={() => { reorderCollections(dragId.current, c.id); setDragOver(null); dragId.current = null; }}
+                onDragEnd={() => { setDragOver(null); dragId.current = null; }}
+                onClick={() => go(f)}
+              >
                 <span className="nav-icon" style={{ fontSize: 15 }}>{c.emoji || '🍽'}</span>
                 <span className="nav-text">{c.name}</span>
                 <span className="nav-count">{count}</span>
