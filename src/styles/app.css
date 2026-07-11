@@ -33,6 +33,7 @@ html,body { height: 100%; overflow: hidden; }
 html { background: var(--espresso); }
 body { font-family: var(--sans); background: var(--parchment); color: var(--ink); display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
 button { -webkit-tap-highlight-color: transparent; outline: none; user-select: none; -webkit-appearance: none; appearance: none; }
+button:focus { outline: none; }
 button:focus-visible { outline: 2px solid var(--terra); outline-offset: 2px; }
 
 /* ── TOP BAR ──────────────────────────────────────────── */
@@ -68,6 +69,7 @@ button:focus-visible { outline: 2px solid var(--terra); outline-offset: 2px; }
 .topbar-right { display: flex; align-items: center; gap: 12px; padding-right: 24px; flex-shrink: 0; }
 .view-toggle { display: flex; gap: 2px; background: var(--linen); border-radius: var(--r-sm); padding: 3px; }
 .vbtn { width: 32px; height: 32px; border: none; background: transparent; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); transition: background .15s, color .15s; }
+.vbtn:active { background: var(--linen); }
 .vbtn.on { background: var(--cream); color: var(--terra); box-shadow: 0 1px 4px rgba(46,31,15,.12); }
 .btn-add {
   display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 20px;
@@ -461,6 +463,7 @@ button:focus-visible { outline: 2px solid var(--terra); outline-offset: 2px; }
 .detail-bar-title { flex: 1; font-family: var(--serif); font-size: 17px; font-weight: 600; color: var(--espresso); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mode-toggle { display: flex; background: var(--linen); border-radius: var(--r-sm); padding: 3px; gap: 2px; flex-shrink: 0; }
 .mbtn { display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px; border: none; background: transparent; border-radius: 4px; font-family: var(--sans); font-size: 12.5px; font-weight: 700; color: var(--muted); cursor: pointer; transition: background .15s, color .15s; white-space: nowrap; }
+.mbtn:active:not(.on) { background: var(--linen); }
 .mbtn.on { background: var(--cream); color: var(--terra); box-shadow: 0 1px 4px rgba(46,31,15,.12); }
 .detail-fav { width: 36px; height: 36px; border: none; background: var(--linen); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: transform .15s; }
 .detail-fav.on svg { fill: #D4A843; stroke: #D4A843; }
@@ -479,7 +482,8 @@ button:focus-visible { outline: 2px solid var(--terra); outline-offset: 2px; }
 .d-meta-label { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .d-meta-val { font-size: 14px; font-weight: 700; color: var(--espresso); }
 .scaler { display: flex; align-items: center; gap: 8px; }
-.scaler-btn { width: 26px; height: 26px; border: 1.5px solid var(--linen); background: var(--parchment); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--walnut); font-size: 16px; line-height: 1; transition: border-color .15s; font-weight: 700; }
+.scaler-btn { width: 26px; height: 26px; border: 1.5px solid var(--linen); background: var(--parchment); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--walnut); font-size: 16px; line-height: 1; transition: border-color .15s, color .15s, background .15s; font-weight: 700; }
+.scaler-btn:active { background: var(--linen); }
 .scaler-val { font-size: 14px; font-weight: 700; color: var(--espresso); min-width: 20px; text-align: center; }
 .d-cols { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .d-col-badge { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; color: var(--walnut); background: var(--linen); padding: 3px 10px; border-radius: 99px; }
@@ -1051,6 +1055,7 @@ button:focus-visible { outline: 2px solid var(--terra); outline-offset: 2px; }
   font-family: var(--sans); font-size: 11px; font-weight: 700; color: var(--muted);
   cursor: pointer; transition: background .15s, color .15s, border-color .15s;
 }
+.btn-unit-toggle:active { background: var(--cream); }
 .btn-unit-toggle.metric { background: var(--terra); border-color: var(--terra); color: #fff; }
 
 /* ── COLLECTION EMOJIS ──────────────────────────────── */
