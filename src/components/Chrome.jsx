@@ -235,6 +235,7 @@ export function BottomNav({ onNewCollection, onEditCollection }) {
               <button
                 className="nav-item-edit"
                 title="Edit collection"
+                onTouchStart={(e) => e.stopPropagation()}
                 onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setSheetOpen(false); setTimeout(() => onEditCollection(c.id), 320); }}
                 onClick={(e) => { e.stopPropagation(); setSheetOpen(false); setTimeout(() => onEditCollection(c.id), 320); }}
               >
