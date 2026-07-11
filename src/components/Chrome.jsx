@@ -205,11 +205,16 @@ export function ConfirmDialog() {
 }
 
 export function BottomNav({ onNewCollection, onEditCollection }) {
-  const { filter, setFilter, collections, shoppingList } = useLibrary();
+  const { filter, setFilter, collections, shoppingList, deleteCollection, confirm, toast } = useLibrary();
   const [sheetOpen, setSheetOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const go = (f) => { setFilter(f); setSheetOpen(false); navigate('/'); };
+  const doDelete = (id) => {
+    const c = collections.find((x) => x.id === id);
+    if (!c) return;
+    confirm(`Delete "${c.name}"? Recipes won't be deleted.`, () => { deleteCollection(id); toast(`"${c.name}" deleted`, true); }, 'Delete');
+  };
   const isCol = filter.indexOf('col:') === 0;
   const isShoppingList = location.pathname === '/shopping-list';
   return (
@@ -245,8 +250,8 @@ export function BottomNav({ onNewCollection, onEditCollection }) {
                 className="nav-item-edit del"
                 title="Delete collection"
                 onTouchStart={(e) => e.stopPropagation()}
-                onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setSheetOpen(false); setTimeout(() => doDeleteCollection(c.id), 50); }}
-                onClick={(e) => { e.stopPropagation(); setSheetOpen(false); setTimeout(() => doDeleteCollection(c.id), 50); }}
+                onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setSheetOpen(false); setTimeout(() => doDelete(c.id), 50); }}
+                onClick={(e) => { e.stopPropagation(); setSheetOpen(false); setTimeout(() => doDelete(c.id), 50); }}
               >
                 <TrashIcon size={12} strokeWidth={2.2} />
               </button>
