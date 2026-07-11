@@ -155,6 +155,11 @@ function convertToMetric(text) {
     return roundMetric(parseFloat(n) * 28.35) + 'g';
   });
 
+  // Inches → cm
+  out = out.replace(/([\d]+(?:\.[\d]+)?)\s*(?:inches?|inch|in\.)(?![a-zA-Z])/gi, function(m, n) {
+    return roundMetric(parseFloat(n) * 2.54) + 'cm';
+  });
+
   return out;
 }
 
