@@ -61,7 +61,7 @@ body { font-family: var(--sans); background: var(--parchment); color: var(--ink)
 .search-wrap input::placeholder { color: var(--muted); }
 .search-wrap input:focus { border-color: var(--terra); background: var(--cream); }
 .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
-.search-clear-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 12px; line-height: 1; padding: 2px 4px; border-radius: 99px; transition: color .15s; }
+.search-clear-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 15px; line-height: 1; padding: 2px 4px; border-radius: 99px; transition: color .15s; }
 .search-clear-btn:hover { color: var(--ink); }
 .topbar-right { display: flex; align-items: center; gap: 12px; padding-right: 24px; flex-shrink: 0; }
 .view-toggle { display: flex; gap: 2px; background: var(--linen); border-radius: var(--r-sm); padding: 3px; }
