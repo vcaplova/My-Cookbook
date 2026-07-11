@@ -184,3 +184,52 @@ export function getStepIngs(r, stepIdx) {
   return result;
 }
 
+
+// Returns the section name the given step index belongs to, or null if no sections.
+export function getStepSection(r, stepIdx) {
+  var steps = r.steps || [];
+  var stepText = (steps[stepIdx] || '').toLowerCase();
+  var stopwords = new Set(['with','and','the','for','all','purpose','into','from','over','until','then','this','that','them','some','each','both','more','well','very','just','also','only','such','even','once','most','make','made','high','heat','cool','cold','warm','room','temp','temperature','large','small','medium','whole','fresh','dried','ground','optional','taste','chopped','minced','diced','grated','sliced','unsalted','salted']);
+
+  var sections = [];
+  var current = { header: null, ingredients: [] };
+  (r.ingredients || []).forEach(function(ing) {
+    if (ing.startsWith('##')) {
+      if (current.header !== null || current.ingredients.length) sections.push(current);
+      current = { header: ing.replace(/^##\s*/, ''), ingredients: [] };
+    } else {
+      current.ingredients.push(ing);
+    }
+  });
+  sections.push(current);
+  if (sections.length <= 1 || !sections[0].header) return null;
+
+  function getWords(ing) {
+    var name = ing.replace(/^[\d\/½¼¾⅓⅔⅛⅜⅝⅞\s]+(g|kg|ml|l|tsp|tbsp|cup|oz|lb|pinch|x|large|small|medium|whole)?\s*/i,'').toLowerCase();
+    return name.split(/[\s,()]+/).filter(function(w){ return w.length > 3 && !stopwords.has(w); });
+  }
+
+  function sectionScore(sec) {
+    return sec.ingredients.filter(function(ing){
+      var words = getWords(ing);
+      return words.some(function(w){
+        return new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '\\b').test(stepText);
+      });
+    }).length;
+  }
+
+  var best = null; var bestScore = 0;
+  sections.forEach(function(sec) {
+    var score = sectionScore(sec);
+    if (score > bestScore) { bestScore = score; best = sec.header; }
+  });
+
+  // Fall back: scan previous steps for last known section
+  if (!best) {
+    for (var i = stepIdx - 1; i >= 0; i--) {
+      var prev = getStepSection(r, i);
+      if (prev) return prev;
+    }
+  }
+  return best;
+}
