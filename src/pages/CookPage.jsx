@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useLibrary } from '../context/LibraryContext';
-import { scaleIng, getStepIngs, extractTimerFromStep, formatTimerTime } from '../lib/utils';
+import { scaleIng, getStepIngs, getStepSection, extractTimerFromStep, formatTimerTime } from '../lib/utils';
 import { convertIngredient } from '../lib/units';
 import { ChevronLeft, ChevronRight, ListIcon, FlameIcon, PinIcon, StarIcon } from '../components/Icons';
 import DetailBarActions from '../components/DetailBarActions';
@@ -114,6 +114,8 @@ export default function CookPage({ onEdit }) {
   const timers = extractTimerFromStep(stepText);
   const ings = getStepIngs(recipe, step);
   const nextIngs = step < total - 1 ? getStepIngs(recipe, step + 1) : [];
+  const section = getStepSection(recipe, step);
+  const nextSection = step < total - 1 ? getStepSection(recipe, step + 1) : null;
   const isLast = step >= total - 1;
   const ratio = scaledServings / baseServings;
 
@@ -154,7 +156,10 @@ export default function CookPage({ onEdit }) {
           <div className="cook-prog"><div className="cook-prog-fill" style={{ width: ((step + 1) / total * 100) + '%' }}></div></div>
           <div className="cook-body">
             <div className="cook-cur">
-              <div className="cook-step-label">Step {step + 1} of {total}</div>
+              <div className="cook-step-label">
+                {section && <span className="cook-section-label">{section}</span>}
+                Step {step + 1} of {total}
+              </div>
               <div className="cook-ing-title">Ingredients for this step</div>
               <div className="cook-ings">
                 {ings.length
@@ -168,7 +173,9 @@ export default function CookPage({ onEdit }) {
             </div>
             {!isLast && (
               <div className="cook-next">
-                <div className="cook-next-label">Up next</div>
+                <div className="cook-next-label">
+                Up next {nextSection && nextSection !== section && <span className="cook-section-label">{nextSection}</span>}
+              </div>
                 <div className="cook-next-ing-label">Ingredients needed</div>
                 <div className="cook-next-chips">
                   {nextIngs.map((i, k) => <span key={k} className="cook-ing-chip">{convertIngredient(scaleIng(i, ratio), unitMode)}</span>)}
