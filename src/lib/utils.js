@@ -114,7 +114,7 @@ export function fmtNum(n) {
 
 export function getStepIngs(r, stepIdx) {
   var steps = r.steps || [];
-  var stopwords = new Set(['with','and','the','for','all','purpose','into','from','over','until','then','this','that','them','some','each','both','more','well','very','just','also','only','such','even','once','most','make','made','high','heat','cool','cold','warm','room','temp','temperature','water','large','small','medium','whole','fresh','dried','ground','optional','taste','salt','pepper','unsalted','salted','butter','flour','sugar','cream','sauce','bowl','pan','pot','cup','cups','slice','slices','chopped','minced','diced','grated']);
+  var stopwords = new Set(['with','and','the','for','all','purpose','into','from','over','until','then','this','that','them','some','each','both','more','well','very','just','also','only','such','even','once','most','make','made','high','heat','cool','cold','warm','room','temp','temperature','large','small','medium','whole','fresh','dried','ground','optional','taste','chopped','minced','diced','grated','sliced','unsalted','salted']);
 
   function getWords(ing) {
     var name = ing.replace(/^[\d\/½¼¾⅓⅔⅛⅜⅝⅞\s]+(g|kg|ml|l|tsp|tbsp|cup|oz|lb|pinch|x|large|small|medium|whole)?\s*/i,'').toLowerCase();
