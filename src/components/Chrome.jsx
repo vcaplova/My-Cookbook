@@ -241,6 +241,15 @@ export function BottomNav({ onNewCollection, onEditCollection }) {
               >
                 <EditIcon size={12} strokeWidth={2.2} />
               </button>
+              <button
+                className="nav-item-edit del"
+                title="Delete collection"
+                onTouchStart={(e) => e.stopPropagation()}
+                onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setSheetOpen(false); setTimeout(() => doDeleteCollection(c.id), 50); }}
+                onClick={(e) => { e.stopPropagation(); setSheetOpen(false); setTimeout(() => doDeleteCollection(c.id), 50); }}
+              >
+                <TrashIcon size={12} strokeWidth={2.2} />
+              </button>
             </div>
           ))}
         </div>
