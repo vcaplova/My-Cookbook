@@ -4,7 +4,7 @@ import { COLLECTION_COLORS, FOOD_EMOJIS } from '../../lib/seed';
 import { XIcon } from '../Icons';
 
 export default function CollectionModal({ open, editId, onClose }) {
-  const { collections, addCollection, updateCollection, toast } = useLibrary();
+  const { collections, addCollection, updateCollection, deleteCollection, confirm, toast } = useLibrary();
   const editing = editId ? collections.find((c) => c.id === editId) : null;
 
   const [name, setName] = useState('');
@@ -63,6 +63,11 @@ export default function CollectionModal({ open, editId, onClose }) {
         </div>
         <div className="modal-footer">
           <button className="btn-back" onClick={onClose}>Cancel</button>
+          {editing && (
+            <button className="btn-back" style={{ color: '#c0392b', borderColor: '#c0392b' }} onClick={() => {
+              confirm(`Delete "${editing.name}"?`, () => { deleteCollection(editing.id); toast(`"${editing.name}" deleted`); onClose(); }, 'Delete');
+            }}>Delete</button>
+          )}
           <button className="btn-save" style={{ flex: 1 }} onClick={save}>{editing ? 'Save Changes' : 'Create Collection'}</button>
         </div>
       </div>
