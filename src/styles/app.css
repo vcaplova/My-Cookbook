@@ -1107,7 +1107,7 @@ button:focus:not(:focus-visible) { outline: none; box-shadow: none; filter: none
   .btn-detail-back:hover:not(:focus) { color: var(--terra); }
   .mbtn:hover:not(.on):not(:focus) { color: var(--walnut); }
   .detail-fav:hover:not(:focus) { transform: scale(1.1); }
-  .scaler-btn:hover:not(:focus) { border-color: var(--terra); color: var(--terra); }
+  .scaler-btn:hover { border-color: var(--terra); color: var(--terra); }
   .cook-nav-btn:hover:not(:disabled) { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.35); }
   .cook-nav-btn.primary:hover:not(:disabled) { background: var(--terra-dk); border-color: var(--terra-dk); }
   .cook-nav-btn.done:hover { background: #3a6a3a; border-color: #3a6a3a; }
@@ -1141,7 +1141,6 @@ button:focus:not(:focus-visible) { outline: none; box-shadow: none; filter: none
   .img-thumb-rm:hover { background: #c0392b; }
   .img-add-more:hover { border-color: var(--terra); color: var(--terra); }
   .timer-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
-  .btn-unit-toggle:hover:not(:focus) { background: var(--cream); color: var(--walnut); }
-  .btn-unit-toggle.metric:hover:not(:focus) { background: var(--terra-dk); }
+
   .emoji-opt:hover { background: var(--linen); }
 }
