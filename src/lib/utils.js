@@ -113,19 +113,29 @@ export function fmtNum(n) {
 }
 
 export function getStepIngs(r, stepIdx) {
-  var step = (r.steps[stepIdx]||'').toLowerCase();
-  // Stopwords that are too generic to match on
+  var steps = r.steps || [];
   var stopwords = new Set(['with','and','the','for','all','purpose','into','from','over','until','then','this','that','them','some','each','both','more','well','very','just','also','only','such','even','once','most','make','made','high','heat','cool','cold','warm','room','temp','temperature','water','large','small','medium','whole','fresh','dried','ground','optional','taste','salt','pepper','unsalted','salted','butter','flour','sugar','cream','sauce','bowl','pan','pot','cup','cups','slice','slices','chopped','minced','diced','grated']);
-  return r.ingredients.filter(function(ing){
-    // Strip leading quantity/units to get just the ingredient name
+
+  function getWords(ing) {
     var name = ing.replace(/^[\d\/½¼¾⅓⅔⅛⅜⅝⅞\s]+(g|kg|ml|l|tsp|tbsp|cup|oz|lb|pinch|x|large|small|medium|whole)?\s*/i,'').toLowerCase();
-    // Get meaningful words (length > 3, not stopwords)
-    var words = name.split(/[\s,()]+/).filter(function(w){ return w.length > 3 && !stopwords.has(w); });
+    return name.split(/[\s,()]+/).filter(function(w){ return w.length > 3 && !stopwords.has(w); });
+  }
+
+  function matches(ing, stepText) {
+    var words = getWords(ing);
     if (!words.length) return false;
-    // Require whole-word match in step text
     return words.some(function(w){
-      return new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '\\b').test(step);
+      return new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '\\b').test(stepText);
     });
+  }
+
+  return r.ingredients.filter(function(ing){
+    // Find the first step this ingredient matches
+    var firstMatch = -1;
+    for (var i = 0; i < steps.length; i++) {
+      if (matches(ing, steps[i].toLowerCase())) { firstMatch = i; break; }
+    }
+    return firstMatch === stepIdx;
   });
 }
 
