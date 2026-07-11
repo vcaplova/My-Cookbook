@@ -1115,7 +1115,10 @@ button:focus:not(:focus-visible) { outline: none; box-shadow: none; filter: none
   .btn-icon-del:hover { background: #fdf0ef !important; color: #c0392b !important; }
   .detail-more-menu button:hover { background: var(--linen); }
   .detail-more-menu button.danger:hover { background: #fdf0ef; }
-  .fpill:hover { background: var(--cream); }
+  .fpill:hover:not(.on) { background: var(--linen); }
+  .fpill.on:hover { background: var(--espresso); }
+  .btn-unit-toggle:hover { background: var(--terra); color: #fff; border-color: var(--terra); }
+  .btn-unit-toggle.metric:hover { background: var(--terra-dk); border-color: var(--terra-dk); }
   .btn-tag-edit:hover:not(:focus) { background: var(--cream); color: var(--walnut); border-color: var(--linen); }
   .tag-pill-rm:hover { color: #fff; }
   .btn-tag-add:hover:not(:focus) { border-color: var(--terra); color: var(--terra); background: var(--cream); }
