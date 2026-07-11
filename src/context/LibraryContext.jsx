@@ -165,6 +165,18 @@ export function LibraryProvider({ children }) {
     setRecipes((rs) => rs.map((r) => ({ ...r, collections: r.collections.filter((c) => c !== id) })));
   }, []);
 
+  const reorderCollections = useCallback((fromId, toId) => {
+    setCollections((cs) => {
+      const arr = [...cs];
+      const from = arr.findIndex((c) => c.id === fromId);
+      const to = arr.findIndex((c) => c.id === toId);
+      if (from < 0 || to < 0 || from === to) return cs;
+      const [item] = arr.splice(from, 1);
+      arr.splice(to, 0, item);
+      return arr;
+    });
+  }, []);
+
   // ── Tags ───────────────────────────────────────
   const allTags = useMemo(() => {
     const map = {};
@@ -320,7 +332,7 @@ export function LibraryProvider({ children }) {
     search, setSearch, searchActive, setSearchActive, maxTime, setMaxTime, servingsBand, setServingsBand,
     palette, setPalette, unitMode, setUnitMode,
     addRecipe, updateRecipe, deleteRecipe, toggleStar, togglePin,
-    addCollection, updateCollection, deleteCollection, colById,
+    addCollection, updateCollection, deleteCollection, reorderCollections, colById,
     renameTag, removeTag, clearLibrary, exportJSON,
     shoppingList, addToShoppingList, addAllToShoppingList, toggleShoppingItem,
     removeShoppingItem, removeFromShoppingListByText, removeManyFromShoppingList, addManualShoppingItem, clearCheckedShoppingItems, clearShoppingList,
