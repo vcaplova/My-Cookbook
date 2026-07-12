@@ -108,7 +108,7 @@ export default function CookPage({ onEdit }) {
 
   if (!recipe) { navigate('/'); return null; }
 
-  const steps = recipe.steps || [];
+  const steps = (recipe.steps || []).filter((s) => !s.startsWith('##'));
   const total = steps.length;
   const stepText = steps[step] || '';
   const timers = extractTimerFromStep(stepText);
