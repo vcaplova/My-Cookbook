@@ -183,9 +183,11 @@ function buildSectionMap(r) {
   function ingMatchesStep(ing, stepText) {
     var words = getWords(ing);
     if (!words.length) return false;
-    return words.some(function(w){
+    var matchCount = words.filter(function(w){
       return new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '\\b').test(stepText);
-    });
+    }).length;
+    // Require at least 2 words to match, OR all words match (for single-word ingredients)
+    return matchCount >= 2 || (words.length === 1 && matchCount === 1);
   }
 
   return { sections: sections, steps: steps, stepSections: stepSections, ingMatchesStep: ingMatchesStep, hasSections: hasSections };
