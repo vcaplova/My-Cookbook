@@ -177,7 +177,9 @@ function buildSectionMap(r) {
 
   function getWords(ing) {
     var name = ing.replace(/^[\d\/½¼¾⅓⅔⅛⅜⅝⅞\s]+(g|kg|ml|l|tsp|tbsp|cup|oz|lb|pinch|x|large|small|medium|whole)?\s*/i,'').toLowerCase();
-    return name.split(/[\s,()]+/).filter(function(w){ return w.length > 3 && !stopwords.has(w); });
+    return name.split(/[\s,()]+/).filter(function(w){
+      return w.length > 2 && !stopwords.has(w) && !/^\d+[a-z]*$/.test(w);
+    });
   }
 
   function ingMatchesStep(ing, stepText) {
@@ -186,8 +188,9 @@ function buildSectionMap(r) {
     var matchCount = words.filter(function(w){
       return new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '\\b').test(stepText);
     }).length;
-    // Require at least 2 words to match, OR all words match (for single-word ingredients)
-    return matchCount >= 2 || (words.length === 1 && matchCount === 1);
+    // Short ingredients (≤2 meaningful words): 1 match is enough
+    // Longer ingredients: need 2+ matches to avoid false positives
+    return words.length <= 2 ? matchCount >= 1 : matchCount >= 2;
   }
 
   return { sections: sections, steps: steps, stepSections: stepSections, ingMatchesStep: ingMatchesStep, hasSections: hasSections };
