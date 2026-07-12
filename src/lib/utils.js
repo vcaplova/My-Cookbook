@@ -117,7 +117,6 @@ function buildSectionMap(r) {
   var steps = r.steps || [];
   var stopwords = new Set(['with','and','the','for','all','purpose','into','from','over','until','then','this','that','them','some','each','both','more','well','very','just','also','only','such','even','once','most','make','made','high','heat','cool','cold','warm','room','temp','temperature','large','small','medium','whole','fresh','dried','ground','optional','taste','chopped','minced','diced','grated','sliced','unsalted','salted']);
 
-  // Parse sections in order
   var sections = [];
   var current = { header: null, ingredients: [] };
   (r.ingredients || []).forEach(function(ing) {
@@ -145,19 +144,37 @@ function buildSectionMap(r) {
     });
   }
 
-  // Assign steps to sections sequentially in order —
-  // divide steps proportionally by ingredient count, in the same order as sections appear
-  var totalIngs = sections.reduce(function(s, sec){ return s + Math.max(sec.ingredients.length, 1); }, 0);
-  var stepSections = [];
-  var assigned = 0;
-  sections.forEach(function(sec, si) {
-    var share = Math.round((sec.ingredients.length / totalIngs) * steps.length);
-    if (si === sections.length - 1) share = steps.length - assigned; // last section gets remainder
-    for (var k = 0; k < share; k++) stepSections.push(si);
-    assigned += share;
+  // Find the first step where each section has a matching ingredient,
+  // but enforce ordering: section[i] must start after section[i-1]
+  var sectionStart = sections.map(function() { return -1; });
+  if (hasSections) {
+    var minStart = 0;
+    sections.forEach(function(sec, si) {
+      for (var i = minStart; i < steps.length; i++) {
+        var st = steps[i].toLowerCase();
+        if (sec.ingredients.some(function(ing){ return ingMatchesStep(ing, st); })) {
+          sectionStart[si] = i;
+          minStart = i + 1;
+          break;
+        }
+      }
+    });
+    // Any section not found: place it right after the previous one
+    for (var s = 0; s < sections.length; s++) {
+      if (sectionStart[s] < 0) {
+        sectionStart[s] = s === 0 ? 0 : sectionStart[s-1] + 1;
+      }
+    }
+  }
+
+  // Assign each step to the section whose start is the largest value <= stepIdx
+  var stepSections = steps.map(function(_, si) {
+    var best = 0;
+    for (var s = 0; s < sections.length; s++) {
+      if (sectionStart[s] >= 0 && sectionStart[s] <= si) best = s;
+    }
+    return best;
   });
-  // Pad in case of rounding issues
-  while (stepSections.length < steps.length) stepSections.push(sections.length - 1);
 
   return { sections: sections, stepSections: stepSections, ingMatchesStep: ingMatchesStep, hasSections: hasSections };
 }
@@ -172,7 +189,6 @@ export function getStepIngs(r, stepIdx) {
   var mySectionIdx = stepSections[stepIdx] !== undefined ? stepSections[stepIdx] : 0;
   var mySec = sections[mySectionIdx];
 
-  // Within this section's steps, find ingredients whose first match is this step
   var result = [];
   mySec.ingredients.forEach(function(ing) {
     if (ing.startsWith('##')) return;
