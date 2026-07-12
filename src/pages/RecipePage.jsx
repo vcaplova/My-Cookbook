@@ -158,12 +158,21 @@ export default function RecipePage({ onEdit }) {
           <div className="scroll-right">
             <p className="steps-title">Method</p>
             <div>
-              {recipe.steps.map((s, i) => (
-                <div key={i} className="step-item">
-                  <div className="step-num">{i + 1}</div>
-                  <div className="step-text">{annotateSteps(s)}</div>
-                </div>
-              ))}
+              {(() => {
+                var num = 0;
+                return recipe.steps.map((s, i) => {
+                  if (s.startsWith('##')) {
+                    return <div key={i} className="steps-section-header">{s.replace(/^##\s*/, '')}</div>;
+                  }
+                  num++;
+                  return (
+                    <div key={i} className="step-item">
+                      <div className="step-num">{num}</div>
+                      <div className="step-text">{annotateSteps(s)}</div>
+                    </div>
+                  );
+                });
+              })()}
             </div>
           </div>
         </div>
