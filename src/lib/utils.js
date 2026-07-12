@@ -114,9 +114,10 @@ export function fmtNum(n) {
 
 
 function buildSectionMap(r) {
-  var steps = r.steps || [];
+  var rawSteps = r.steps || [];
   var stopwords = new Set(['with','and','the','for','all','purpose','into','from','over','until','then','this','that','them','some','each','both','more','well','very','just','also','only','such','even','once','most','make','made','high','heat','cool','cold','warm','room','temp','temperature','large','small','medium','whole','fresh','dried','ground','optional','taste','chopped','minced','diced','grated','sliced','unsalted','salted']);
 
+  // Parse ingredient sections
   var sections = [];
   var current = { header: null, ingredients: [] };
   (r.ingredients || []).forEach(function(ing) {
@@ -131,6 +132,49 @@ function buildSectionMap(r) {
 
   var hasSections = sections.length > 1 && sections[0].header;
 
+  // Filter out ## headers from steps, building a map of real step index → section index
+  var steps = [];
+  var stepSections = [];
+  var currentSectionIdx = 0;
+  rawSteps.forEach(function(s) {
+    if (s.startsWith('##')) {
+      // Find matching section by header name
+      var hdr = s.replace(/^##\s*/, '').toLowerCase().trim();
+      var found = sections.findIndex(function(sec){ return sec.header && sec.header.toLowerCase().trim() === hdr; });
+      if (found >= 0) currentSectionIdx = found;
+    } else {
+      steps.push(s);
+      stepSections.push(currentSectionIdx);
+    }
+  });
+
+  // Fallback: if steps have no ## markers, assign by first ingredient match in order
+  if (!hasSections || steps.length === stepSections.filter(function(s){ return s === 0; }).length && sections.length > 1) {
+    // Check if steps array actually had ## markers
+    var hadMarkers = rawSteps.some(function(s){ return s.startsWith('##'); });
+    if (!hadMarkers && hasSections) {
+      // Assign by first appearance of unique ingredient keywords, in section order
+      var minStart = 0;
+      var sectionStart = sections.map(function() { return -1; });
+      sections.forEach(function(sec, si) {
+        for (var i = minStart; i < steps.length; i++) {
+          var st = steps[i].toLowerCase();
+          if (sec.ingredients.some(function(ing){ return ingMatchesStep(ing, st); })) {
+            sectionStart[si] = i; minStart = i + 1; break;
+          }
+        }
+        if (sectionStart[si] < 0) sectionStart[si] = si === 0 ? 0 : sectionStart[si-1] + 1;
+      });
+      stepSections = steps.map(function(_, si) {
+        var best = 0;
+        for (var s = 0; s < sections.length; s++) {
+          if (sectionStart[s] >= 0 && sectionStart[s] <= si) best = s;
+        }
+        return best;
+      });
+    }
+  }
+
   function getWords(ing) {
     var name = ing.replace(/^[\d\/½¼¾⅓⅔⅛⅜⅝⅞\s]+(g|kg|ml|l|tsp|tbsp|cup|oz|lb|pinch|x|large|small|medium|whole)?\s*/i,'').toLowerCase();
     return name.split(/[\s,()]+/).filter(function(w){ return w.length > 3 && !stopwords.has(w); });
@@ -144,39 +188,7 @@ function buildSectionMap(r) {
     });
   }
 
-  // Find the first step where each section has a matching ingredient,
-  // but enforce ordering: section[i] must start after section[i-1]
-  var sectionStart = sections.map(function() { return -1; });
-  if (hasSections) {
-    var minStart = 0;
-    sections.forEach(function(sec, si) {
-      for (var i = minStart; i < steps.length; i++) {
-        var st = steps[i].toLowerCase();
-        if (sec.ingredients.some(function(ing){ return ingMatchesStep(ing, st); })) {
-          sectionStart[si] = i;
-          minStart = i + 1;
-          break;
-        }
-      }
-    });
-    // Any section not found: place it right after the previous one
-    for (var s = 0; s < sections.length; s++) {
-      if (sectionStart[s] < 0) {
-        sectionStart[s] = s === 0 ? 0 : sectionStart[s-1] + 1;
-      }
-    }
-  }
-
-  // Assign each step to the section whose start is the largest value <= stepIdx
-  var stepSections = steps.map(function(_, si) {
-    var best = 0;
-    for (var s = 0; s < sections.length; s++) {
-      if (sectionStart[s] >= 0 && sectionStart[s] <= si) best = s;
-    }
-    return best;
-  });
-
-  return { sections: sections, stepSections: stepSections, ingMatchesStep: ingMatchesStep, hasSections: hasSections };
+  return { sections: sections, steps: steps, stepSections: stepSections, ingMatchesStep: ingMatchesStep, hasSections: hasSections };
 }
 
 export function getStepIngs(r, stepIdx) {
@@ -184,7 +196,7 @@ export function getStepIngs(r, stepIdx) {
   var sections = map.sections;
   var stepSections = map.stepSections;
   var ingMatchesStep = map.ingMatchesStep;
-  var steps = r.steps || [];
+  var steps = map.steps;
 
   var mySectionIdx = stepSections[stepIdx] !== undefined ? stepSections[stepIdx] : 0;
   var mySec = sections[mySectionIdx];
