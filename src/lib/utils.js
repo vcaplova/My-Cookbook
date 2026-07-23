@@ -182,42 +182,80 @@ function buildSectionMap(r) {
     });
   }
 
-  function ingMatchesStep(ing, stepText) {
+  // Returns the character index of the earliest mention of this ingredient in
+  // the step text, or -1 if the ingredient isn't mentioned at all.
+  function matchPos(ing, stepText) {
     var words = getWords(ing);
-    if (!words.length) return false;
-    var matchCount = words.filter(function(w){
-      return new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '\\b').test(stepText);
-    }).length;
+    if (!words.length) return -1;
+    var matchCount = 0;
+    var earliest = -1;
+    words.forEach(function(w){
+      var re = new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '\\b');
+      var m = re.exec(stepText);
+      if (m) {
+        matchCount++;
+        if (earliest < 0 || m.index < earliest) earliest = m.index;
+      }
+    });
     // Short ingredients (≤2 meaningful words): 1 match is enough
     // Longer ingredients: need 2+ matches to avoid false positives
-    return words.length <= 2 ? matchCount >= 1 : matchCount >= 2;
+    var ok = words.length <= 2 ? matchCount >= 1 : matchCount >= 2;
+    return ok ? earliest : -1;
   }
 
-  return { sections: sections, steps: steps, stepSections: stepSections, ingMatchesStep: ingMatchesStep, hasSections: hasSections };
+  function ingMatchesStep(ing, stepText) {
+    return matchPos(ing, stepText) >= 0;
+  }
+
+  // Assign every ingredient to exactly one step, then order the ingredients
+  // within each step by where they are first mentioned in that step's text.
+  var assignments = {}; // stepIdx → [ing, ing, ...]
+
+  sections.forEach(function(sec, secIdx) {
+    var sectionSteps = [];
+    steps.forEach(function(_, i){ if (stepSections[i] === secIdx) sectionSteps.push(i); });
+    if (!sectionSteps.length) return;
+
+    var buckets = {};       // stepIdx → [{ ing, pos, order }]
+    var nextSearchFrom = {}; // ingredient key → index into sectionSteps
+
+    sec.ingredients.forEach(function(ing, order) {
+      if (ing.startsWith('##')) return;
+      var key = getWords(ing).join(' ');
+      if (!key) return;
+
+      function findFrom(start) {
+        for (var k = start; k < sectionSteps.length; k++) {
+          var si = sectionSteps[k];
+          var pos = matchPos(ing, steps[si].toLowerCase());
+          if (pos >= 0) return { k: k, si: si, pos: pos };
+        }
+        return null;
+      }
+
+      // Duplicate names (e.g. water for the rice, water for the sauce) are
+      // consumed in order: the 2nd "water" looks from the step after the 1st.
+      var hit = findFrom(nextSearchFrom[key] || 0);
+      if (!hit && nextSearchFrom[key]) hit = findFrom(0);
+      if (!hit) return;
+
+      nextSearchFrom[key] = hit.k + 1;
+      if (!buckets[hit.si]) buckets[hit.si] = [];
+      buckets[hit.si].push({ ing: ing, pos: hit.pos, order: order });
+    });
+
+    Object.keys(buckets).forEach(function(si) {
+      assignments[si] = buckets[si]
+        .sort(function(a, b){ return a.pos - b.pos || a.order - b.order; })
+        .map(function(x){ return x.ing; });
+    });
+  });
+
+  return { sections: sections, steps: steps, stepSections: stepSections, ingMatchesStep: ingMatchesStep, hasSections: hasSections, assignments: assignments };
 }
 
 export function getStepIngs(r, stepIdx) {
-  var map = buildSectionMap(r);
-  var sections = map.sections;
-  var stepSections = map.stepSections;
-  var ingMatchesStep = map.ingMatchesStep;
-  var steps = map.steps;
-
-  var mySectionIdx = stepSections[stepIdx] !== undefined ? stepSections[stepIdx] : 0;
-  var mySec = sections[mySectionIdx];
-
-  var result = [];
-  mySec.ingredients.forEach(function(ing) {
-    if (ing.startsWith('##')) return;
-    var sectionSteps = steps.map(function(_, i){ return i; }).filter(function(i){ return stepSections[i] === mySectionIdx; });
-    var firstMatch = -1;
-    for (var k = 0; k < sectionSteps.length; k++) {
-      var si = sectionSteps[k];
-      if (ingMatchesStep(ing, steps[si].toLowerCase())) { firstMatch = si; break; }
-    }
-    if (firstMatch === stepIdx) result.push(ing);
-  });
-  return result;
+  return buildSectionMap(r).assignments[stepIdx] || [];
 }
 
 export function getStepSection(r, stepIdx) {
