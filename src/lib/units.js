@@ -177,18 +177,46 @@ export function convertIngredient(text, unitMode) {
   if (/^\s*\d+(?:\.\d+)?\s*(g|kg|ml|l)\b/i.test(out)) return out;
   return convertToMetric(out);
 }
-// Always annotate steps with metric equivalents in brackets, regardless of unit mode
+// Matches a quantity written as "2", "0.5", "2/3", "1 1/2", "1½" or "½"
+export var NUM_RE = '(?:\\d+\\s*[½¼¾⅓⅔⅛⅜⅝⅞]|[½¼¾⅓⅔⅛⅜⅝⅞]|\\d+\\s+\\d+\\/\\d+|\\d+\\/\\d+|\\d+(?:\\.\\d+)?)';
+
+// Parse any of the above written forms into a float.
+export function parseQtyStr(str) {
+  var s = String(str).trim();
+  var uni = {'½':0.5,'¼':0.25,'¾':0.75,'⅓':1/3,'⅔':2/3,'⅛':0.125,'⅜':0.375,'⅝':0.625,'⅞':0.875};
+  var total = 0;
+  for (var k in uni) {
+    if (s.indexOf(k) >= 0) { total += uni[k]; s = s.split(k).join(' '); }
+  }
+  s = s.trim();
+  if (s) {
+    var parts = s.split(/\s+/);
+    parts.forEach(function(p) {
+      if (p.indexOf('/') > 0) {
+        var f = p.split('/');
+        total += parseFloat(f[0]) / parseFloat(f[1]);
+      } else if (!isNaN(parseFloat(p))) {
+        total += parseFloat(p);
+      }
+    });
+  }
+  return total;
+}
+
+// Always annotate steps with metric equivalents in brackets, regardless of unit mode.
+// The written quantity is left exactly as the recipe wrote it — "2/3 cup" stays
+// "2/3 cup" — only the bracketed conversion is added.
 export function annotateSteps(text) {
-  var out = normalizeFractions(text);
+  var out = text;
 
   // °F → °F (°C), only if not already followed by °C
-  out = out.replace(/(\d+(?:\.\d+)?)\s*°F(?!\s*\(?\s*\d+°C)/g, function(m, f) {
-    return f + '°F (' + Math.round((parseFloat(f) - 32) * 5 / 9) + '°C)';
+  out = out.replace(new RegExp('(' + NUM_RE + ')\\s*°F(?!\\s*\\(?\\s*\\d+°C)', 'g'), function(m, f) {
+    return f + '°F (' + Math.round((parseQtyStr(f) - 32) * 5 / 9) + '°C)';
   });
 
   // inches → inch (cm)
-  out = out.replace(/(\d+(?:\.\d+)?)-?\s*(?:inches?|inch)(?!\s*\(\d+(?:\.\d+)?cm\))(?![a-zA-Z])/gi, function(m, n) {
-    return n + '-inch (' + roundMetric(parseFloat(n) * 2.54) + 'cm)';
+  out = out.replace(new RegExp('(' + NUM_RE + ')-?\\s*(?:inches?|inch)(?!\\s*\\(\\d+(?:\\.\\d+)?cm\\))(?![a-zA-Z])', 'gi'), function(m, n) {
+    return n + '-inch (' + roundMetric(parseQtyStr(n) * 2.54) + 'cm)';
   });
 
   return out;

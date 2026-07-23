@@ -1,3 +1,4 @@
+import { NUM_RE, parseQtyStr } from './units';
 // Pure helpers ported verbatim from the original Mise en Place app.
 
 export function parseSecs(num, unit) {
@@ -182,6 +183,40 @@ function buildSectionMap(r) {
     });
   }
 
+  // --- Quantity-aware matching -------------------------------------------
+  // When a step spells out a measure ("add 2/3 cup water"), that measure binds
+  // the step to the ingredient line carrying the same measure, rather than to
+  // whichever line merely happens to be listed first.
+  var UNIT_ALIASES = {
+    cup:'cup', cups:'cup', tbsp:'tbsp', tablespoon:'tbsp', tablespoons:'tbsp',
+    tsp:'tsp', teaspoon:'tsp', teaspoons:'tsp', g:'g', gram:'g', grams:'g',
+    kg:'kg', kilogram:'kg', kilograms:'kg', ml:'ml', milliliter:'ml', milliliters:'ml',
+    l:'l', liter:'l', liters:'l', litre:'l', litres:'l', oz:'oz', ounce:'oz', ounces:'oz',
+    lb:'lb', lbs:'lb', pound:'lb', pounds:'lb'
+  };
+  var UNIT_WORDS = Object.keys(UNIT_ALIASES).join('|');
+  var QTY_RE = new RegExp('(' + NUM_RE + ')\\s*(' + UNIT_WORDS + ')\\b', 'gi');
+
+  // The leading measure on an ingredient line, e.g. "2/3 cup water" → 0.667 cup
+  function ingQty(ing) {
+    var m = new RegExp('^\\s*(' + NUM_RE + ')\\s*(' + UNIT_WORDS + ')\\b', 'i').exec(ing);
+    if (!m) return null;
+    return { amount: parseQtyStr(m[1]), unit: UNIT_ALIASES[m[2].toLowerCase()] };
+  }
+
+  // Position of a matching measure inside the step text, or -1
+  function qtyPosInStep(qty, stepText) {
+    if (!qty) return -1;
+    QTY_RE.lastIndex = 0;
+    var m;
+    while ((m = QTY_RE.exec(stepText)) !== null) {
+      if (UNIT_ALIASES[m[2].toLowerCase()] !== qty.unit) continue;
+      var amt = parseQtyStr(m[1]);
+      if (Math.abs(amt - qty.amount) < 0.02) return m.index;
+    }
+    return -1;
+  }
+
   // Returns the character index of the earliest mention of this ingredient in
   // the step text, or -1 if the ingredient isn't mentioned at all.
   function matchPos(ing, stepText) {
@@ -224,6 +259,22 @@ function buildSectionMap(r) {
       var key = getWords(ing).join(' ');
       if (!key) return;
 
+      var qty = ingQty(ing);
+
+      // Pass 1: a step that names this ingredient AND its exact measure wins,
+      // regardless of where it sits in the sequence.
+      function findByQty(start) {
+        for (var k = start; k < sectionSteps.length; k++) {
+          var si = sectionSteps[k];
+          var st = steps[si].toLowerCase();
+          if (matchPos(ing, st) < 0) continue;
+          var qp = qtyPosInStep(qty, st);
+          if (qp >= 0) return { k: k, si: si, pos: qp };
+        }
+        return null;
+      }
+
+      // Pass 2: plain name match.
       function findFrom(start) {
         for (var k = start; k < sectionSteps.length; k++) {
           var si = sectionSteps[k];
@@ -235,8 +286,9 @@ function buildSectionMap(r) {
 
       // Duplicate names (e.g. water for the rice, water for the sauce) are
       // consumed in order: the 2nd "water" looks from the step after the 1st.
-      var hit = findFrom(nextSearchFrom[key] || 0);
-      if (!hit && nextSearchFrom[key]) hit = findFrom(0);
+      var start = nextSearchFrom[key] || 0;
+      var hit = findByQty(start) || findFrom(start);
+      if (!hit && start) hit = findByQty(0) || findFrom(0);
       if (!hit) return;
 
       nextSearchFrom[key] = hit.k + 1;
